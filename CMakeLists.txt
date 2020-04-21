@@ -77,6 +77,20 @@ FetchContent_Declare(
     GIT_TAG        v2.11.1
 )
 
+# Command-line parsing library
+FetchContent_Declare(
+        gflags
+        GIT_REPOSITORY https://github.com/gflags/gflags.git
+        GIT_TAG v2.2.2
+)
+
+# Database library
+FetchContent_Declare(
+        sqlite-modern-cpp
+        GIT_REPOSITORY https://github.com/SqliteModernCpp/sqlite_modern_cpp.git
+        GIT_TAG a0f96c10f04d96ccea1b8a49d5998c96e7887bf4
+)
+
 # Adds catch2 library. This is a header only library.
 FetchContent_GetProperties(catch2)
 if(NOT catch2_POPULATED)
@@ -87,3 +101,18 @@ if(NOT catch2_POPULATED)
 endif()
 
 # Add more CMake libraries here ...
+
+# Adds gflags::gflags
+FetchContent_GetProperties(gflags)
+if(NOT gflags_POPULATED)
+    FetchContent_Populate(gflags)
+    add_subdirectory(${gflags_SOURCE_DIR} ${gflags_BINARY_DIR})
+endif()
+
+# Adds sqlite_modern_cpp.
+FetchContent_GetProperties(sqlite-modern-cpp)
+if (NOT sqlite-modern-cpp_POPULATED)
+    FetchContent_Populate(sqlite-modern-cpp)
+    add_library(sqlite-modern-cpp INTERFACE)
+    target_include_directories(sqlite-modern-cpp INTERFACE ${sqlite-modern-cpp_SOURCE_DIR}/hdr)
+endif ()

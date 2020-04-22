@@ -15,6 +15,9 @@ class MyApp : public cinder::app::App {
   void update() override;
   void draw() override;
   void keyDown(cinder::app::KeyEvent) override;
+
+  static void DrawGrid();
+  void ShowExampleAppCustomRendering(bool* p_open);
 };
 
 }  // namespace myapp

@@ -20,8 +20,10 @@ class MyApp : public cinder::app::App {
   void draw() override;
   void keyDown(cinder::app::KeyEvent) override;
 
-  void DrawGrid(const board::Board& board);
+  void DrawStart();
+  void DrawGrid();
 
+  board::Board board_;
   ci::gl::TextureRef image1;
   ci::gl::TextureRef image2;
 

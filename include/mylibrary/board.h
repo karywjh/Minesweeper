@@ -20,18 +20,17 @@ struct Position {
 class Board {
  public:
   int width_;
-  int length_;
+  int height_;
   int mine_count_;
   Position start_pos_;
   Cell** board_;
 
-  Board(Position start);
-  Board(int width, int length, Position start);
-  Board(int width, int length, int mine_count, Position start);
+  Board();
+  Board(int width, int height, Position start);
+  Board(int width, int height, int mine_count, Position start);
   // TBA: 3D Board
 
-  // Total number of cells in the board.
-  int GetTotalCells();
+  void InitProperties(const int width, const int height, const int mine_count);
 
   // Count total number of non-flagged mines left.
   int GetMinesLeft();
@@ -46,7 +45,7 @@ class Board {
   // fill in the blank cells that are not mines.
   void FillInValues();
 
-  Cell** GenerateBoard(const int width, const int length, const int mines, Position start_pos);
+  Cell** GenerateBoard(const int width, const int height, const int mines, Position start_pos);
 };
 
 

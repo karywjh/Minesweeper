@@ -7,6 +7,8 @@
 
 namespace board {
 
+using cinder::gl::TextureRef;
+
 class Cell {
  public:
 
@@ -17,11 +19,18 @@ class Cell {
   };
 
   int value_; // #0-8, or -1 as mine
-  ci::gl::TextureRef image_;
+  TextureRef image_; // image displayed in GUI corresponding to cell state
   CellState state_;
 
   explicit Cell(int value);
 
+  /**
+   * Get the Image texture after cell state had been changed.
+   * (player had clicked or flagged the cell)
+   * @param new_state New state of the cell after player's move
+   * @return image to be displayed after the change of state
+   */
+  TextureRef GetChangedImage(CellState new_state);
 };
 }  // namespace board
 

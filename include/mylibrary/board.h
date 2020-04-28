@@ -3,18 +3,31 @@
 #ifndef FINALPROJECT_BOARD_H
 #define FINALPROJECT_BOARD_H
 
+#include <mylibrary/cell.h>
 namespace board {
+
+const int kDefaultWidth = 9;
+const int kDefaultLength = 9;
+const int kDefaultMines = 10;
+
+struct Position {
+  int x;
+  int y;
+
+//  bool operator <(const Position& left, const Position& right);
+};
 
 class Board {
  public:
   int width_;
   int length_;
   int mine_count_;
-  Cell** board[width_][length_];
+  Position start_pos_;
+  Cell** board_;
 
-  Board();
-  Board(int width, int length);
-  Board(int width, int length, int mine_count);
+  Board(Position start);
+  Board(int width, int length, Position start);
+  Board(int width, int length, int mine_count, Position start);
   // TBA: 3D Board
 
   // Total number of cells in the board.
@@ -32,6 +45,8 @@ class Board {
   // Based on how many mines are around the cell,
   // fill in the blank cells that are not mines.
   void FillInValues();
+
+  Cell** GenerateBoard(const int width, const int length, const int mines, Position start_pos);
 };
 
 

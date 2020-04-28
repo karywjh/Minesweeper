@@ -4,9 +4,13 @@
 #define FINALPROJECT_APPS_MYAPP_H_
 
 #include <cinder/app/App.h>
+#include <cinder/gl/Texture.h>
 
+#include <mylibrary/board.h>
 
 namespace myapp {
+
+const int cell_size_ = 30;
 
 class MyApp : public cinder::app::App {
  public:
@@ -16,8 +20,11 @@ class MyApp : public cinder::app::App {
   void draw() override;
   void keyDown(cinder::app::KeyEvent) override;
 
-  static void DrawGrid();
-  void ShowExampleAppCustomRendering(bool* p_open);
+  void DrawGrid(const board::Board& board);
+
+  ci::gl::TextureRef image1;
+  ci::gl::TextureRef image2;
+
 };
 
 }  // namespace myapp

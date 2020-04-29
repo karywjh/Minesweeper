@@ -45,6 +45,8 @@ void MyApp::DrawStart(){
 void MyApp::DrawGrid() {
   // Change the window size depending on the board size.
   setWindowSize(board_.width_ * cell_size_, board_.height_ * cell_size_);
+
+  this->board_.GenerateBoard(16, 16, 40, board::Location(0, 0));
   vector<vector<board::Cell>> board = this->board_.cells_;
 
   // Loop through every cell of board, draw every cell

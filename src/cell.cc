@@ -12,20 +12,20 @@ Cell::Cell() {
   this->state_ = CellState::COVERED;
   this->image_ = Texture::create(cinder::loadImage(
       cinder::app::loadAsset("Images/facingDown.png")));
-  this->position_ = Position{0, 0};
+  this->location_ = Location(0, 0);
 }
 
-Cell::Cell(int value, Position position) {
+Cell::Cell(int value, Location location) {
     this->value_ = value;
     this->state_ = CellState::COVERED;
     this->image_ = Texture::create(cinder::loadImage(
         cinder::app::loadAsset("Images/facingDown.png")));
-    this->position_ = position;
+    this->location_ = location;
 }
 
-void Cell::InitCell(int value, Position position) {
+void Cell::InitCell(int value, Location location) {
   this->value_ = value;
-  this->position_ = position;
+  this->location_ = location;
 }
 
 TextureRef Cell::GetChangedImage(CellState new_state) {
@@ -57,11 +57,6 @@ TextureRef Cell::GetChangedImage(CellState new_state) {
       break;
     }
   }
-}
-
-bool Cell::operator<(const Cell& cell) const {
-  return (this->position_.x < cell.position_.x) ||
-         (this->position_.y < cell.position_.y);
 }
 
 }  // namespace board

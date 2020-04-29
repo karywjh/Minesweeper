@@ -4,7 +4,7 @@
 #define FINALPROJECT_BOARD_H
 
 #include <set>
-#include <mylibrary/cell.h>
+#include "cell.h"
 
 namespace board {
 
@@ -20,15 +20,15 @@ class Board {
   int width_;
   int height_;
   int mine_count_;
-  Position start_pos_;
+//  Location start_loc_;
   vector<vector<Cell>> cells_;
   int id_; // id representing a board
 
-  set<Position> mine_pos_;
+  set<Location> mine_pos_;
 
   Board();
-  Board(int width, int height, Position start);
-  Board(int width, int height, int mine_count, Position start);
+//  Board(int width, int height, Location start);
+//  Board(int width, int height, int mine_count, Location start);
   // TBA: 3D Board
   // TBA: Board with ID
 
@@ -47,7 +47,7 @@ class Board {
   // fill in the blank cells that are not mines.
   void FillInValues();
 
-  vector<vector<Cell>> GenerateBoard(const int width, const int height, const int mines, Position start);
+  void GenerateBoard(const int width, const int height, const int mines, Location start);
 };
 
 

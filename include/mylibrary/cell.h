@@ -4,21 +4,22 @@
 #define FINALPROJECT_CELL_H
 
 #include <cinder/gl/Texture.h>
+#include "location.h"
 
 namespace board {
 
 using cinder::gl::TextureRef;
-
+using board::Location;
 // Position of Cells start from {0, 0}
-struct Position {
-  int row;
-  int col;
-
-  bool operator<(const Position& position) const {
-    return (row < position.row) ||
-           (col < position.col);
-  }
-};
+//struct Position {
+//  int row;
+//  int col;
+//
+//  bool operator<(const Position& position) const {
+//    return (row < position.row) ||
+//           (col < position.col);
+//  }
+//};
 
 class Cell {
  public:
@@ -32,17 +33,17 @@ class Cell {
   int value_; // #0-8, or -1 as mine
   TextureRef image_; // displayed in GUI corresponding to its state & value
   CellState state_;
-  Position position_;
+  Location location_;
 
   Cell();
-  explicit Cell(int value, Position position);
+  explicit Cell(int value, Location location);
 
   /**
-   * Initiate the value and position of Cell.
+   * Initiate the value and location of Cell.
    * @param value initial value
-   * @param position position of Cell
+   * @param location location of Cell
    */
-  void InitCell(int value, Position position);
+  void InitCell(int value, Location location);
 
   /**
    * Get the Image texture after cell state had been changed.
@@ -51,11 +52,6 @@ class Cell {
    * @return image to be displayed after the change of state
    */
   TextureRef GetChangedImage(CellState new_state);
-
-  /**
-   * Compare two Cells. Used for inserting into a Set of Cells.
-   */
-  bool operator<(const Cell& cell) const;
 };
 }  // namespace board
 

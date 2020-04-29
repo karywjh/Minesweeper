@@ -27,7 +27,6 @@ class Board {
   // TBA: 3D Board
   // TBA: Board with ID
 
-
   void InitProperties(const int width, const int height, const int mine_count);
 
   // Count total number of non-flagged mines left.

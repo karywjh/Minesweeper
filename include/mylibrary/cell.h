@@ -13,6 +13,11 @@ using cinder::gl::TextureRef;
 struct Position {
   int x;
   int y;
+
+  bool operator<(const Position& position) const {
+    return (x < position.x) ||
+           (y < position.y);
+  }
 };
 
 class Cell {

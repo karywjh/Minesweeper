@@ -3,6 +3,7 @@
 #ifndef FINALPROJECT_BOARD_H
 #define FINALPROJECT_BOARD_H
 
+#include <set>
 #include <mylibrary/cell.h>
 
 namespace board {
@@ -20,6 +21,7 @@ class Board {
   int mine_count_;
   Position start_pos_;
   vector<vector<Cell>> board_;
+  int id_; // id representing a board
 
   Board();
   Board(int width, int height, Position start);
@@ -36,7 +38,7 @@ class Board {
   int CountSurroundingMines(const int x, const int y);
 
   // Randomly assign mines to cells.
-  void GenerateMines();
+  std::set<Position> GenerateMines();
 
   // Based on how many mines are around the cell,
   // fill in the blank cells that are not mines.

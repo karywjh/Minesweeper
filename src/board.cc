@@ -1,20 +1,18 @@
 // Copyright (c) 2020 [Your Name]. All rights reserved.
 
 #include <mylibrary/board.h>
-#include <set>
+#include <time.h>
+#include <stdlib.h>
 
 #include <iostream>
 
 namespace board {
 
-//bool Position& operator <(const Position& left) {
-//  return (left.x < right.x) || (left.y < right.y);
-//}
-
 Board::Board() {
   this->width_ = kDefaultWidth;
   this->height_ = kDefaultLength;
   this->mine_count_ = kDefaultMines;
+  this->id_ = time(NULL);
 }
 
 // unused
@@ -47,6 +45,21 @@ void Board::InitProperties(const int width, const int height,
   }
 }
 
+std::set<Position> Board::GenerateMines() {
+  std::set<Position> mines;
+  srand(this->id_);
+
+  // Generate Random Position to place mines.
+  // Insert the positions into the set.
+  while (mines.size() < this->mine_count_) {
+    mines.insert(Position{rand() % this->width_, rand() % this->height_});
+  }
+
+  for (Position pos: mines) {
+    this->board_[pos.y][pos.x].InitCell(-1, pos);
+  }
+  return mines;
+}
 
 Cell** Board::GenerateBoard(const int width, const int height, const int mines, Position start) {
   // Set start position to have value 0
@@ -54,7 +67,7 @@ Cell** Board::GenerateBoard(const int width, const int height, const int mines, 
 
   // Randomly Place Mines and fill in rest of the board
   GenerateMines();
-  FillInValues();
+//  FillInValues();
 
   std::set<Cell> cells;
   cells.insert(Cell(1, Position{2,2}));

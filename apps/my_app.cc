@@ -7,11 +7,14 @@
 #include <cinder/gl/wrapper.h>
 #include <cinder/gl/gl.h>
 
+#include <vector>
+
 namespace myapp {
 
 using cinder::app::KeyEvent;
 using cinder::Color;
 using cinder::Rectf;
+using std::vector;
 
 MyApp::MyApp() : board_{board::Board()} {}
 
@@ -37,18 +40,28 @@ void MyApp::DrawStart(){
   // Letting User to Select Settings for Game
   // Initiate board_
   board_.InitProperties(16, 16, 40); // test code
-  board::Cell** cells = board_.GenerateBoard(16, 16, 40, board::Position{0, 0});
 }
 
 void MyApp::DrawGrid() {
   // Change the window size depending on the board size.
   setWindowSize(board_.width_ * cell_size_, board_.height_ * cell_size_);
+  vector<vector<board::Cell>> board = this->board_.cells_;
 
-  // Loop through every cell of board, draw Grid
-  cinder::gl::draw(image1, cinder::Rectf(0, 0, cell_size_, cell_size_));
+  // Loop through every cell of board, draw every cell
+  for (int row = 0; row < this->board_.height_; row++) {
+    for (int col = 0; col < this->board_.width_; col++) {
+      board::Cell curr_cell = this->board_.cells_[row][col];
+      cinder::Rectf rect(col * cell_size_, row * cell_size_,
+                         (col + 1) * cell_size_, (row + 1) * cell_size_);
 
-  cinder::Rectf rectf(cell_size_, 0, cell_size_ + 30,  cell_size_);
-  cinder::gl::draw(image2, rectf);
+      cinder::gl::draw(curr_cell.image_,rect);
+    }
+  }
+
+//  cinder::gl::draw(image1, cinder::Rectf(0, 0, cell_size_, cell_size_));
+//
+//  cinder::Rectf rectf(cell_size_, 0, cell_size_ + 30,  cell_size_);
+//  cinder::gl::draw(image2, rectf);
 }
 
 }  // namespace myapp

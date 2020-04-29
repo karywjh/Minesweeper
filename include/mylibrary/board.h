@@ -9,6 +9,7 @@
 namespace board {
 
 using std::vector;
+using std::set;
 
 const int kDefaultWidth = 9;
 const int kDefaultLength = 9;
@@ -20,8 +21,10 @@ class Board {
   int height_;
   int mine_count_;
   Position start_pos_;
-  vector<vector<Cell>> board_;
+  vector<vector<Cell>> cells_;
   int id_; // id representing a board
+
+  set<Position> mine_pos_;
 
   Board();
   Board(int width, int height, Position start);
@@ -35,16 +38,16 @@ class Board {
   int GetMinesLeft();
 
   // Count how many mines is next to the cell.
-  int CountSurroundingMines(const int x, const int y);
+  int CountSurroundingMines(const int row, const int col);
 
   // Randomly assign mines to cells.
-  std::set<Position> GenerateMines();
+  void GenerateMines();
 
   // Based on how many mines are around the cell,
   // fill in the blank cells that are not mines.
   void FillInValues();
 
-  Cell** GenerateBoard(const int width, const int height, const int mines, Position start);
+  vector<vector<Cell>> GenerateBoard(const int width, const int height, const int mines, Position start);
 };
 
 

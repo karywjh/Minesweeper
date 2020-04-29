@@ -47,3 +47,6 @@
    - switch image if player changed cell states
    - made vector and set of Cells for board
  
+  * **April 29:**
+    - generate mines
+    - draw initial board

@@ -11,12 +11,12 @@ using cinder::gl::TextureRef;
 
 // Position of Cells start from {0, 0}
 struct Position {
-  int x;
-  int y;
+  int row;
+  int col;
 
   bool operator<(const Position& position) const {
-    return (x < position.x) ||
-           (y < position.y);
+    return (row < position.row) ||
+           (col < position.col);
   }
 };
 

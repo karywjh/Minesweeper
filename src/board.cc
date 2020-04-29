@@ -38,43 +38,56 @@ void Board::InitProperties(const int width, const int height,
   this->mine_count_ = mine_count;
 
   // Set the size for Cell** board_
-  this->board_.resize(height);
+  this->cells_.resize(height);
 
   for (int i = 0; i < height; i++) {
-    board_.at(i).resize(width);
+    cells_.at(i).resize(width);
   }
 }
 
-std::set<Position> Board::GenerateMines() {
-  std::set<Position> mines;
+int Board::CountSurroundingMines(const int row, const int col) {
+
+}
+
+
+void Board::GenerateMines() {
   srand(this->id_);
 
   // Generate Random Position to place mines.
   // Insert the positions into the set.
-  while (mines.size() < this->mine_count_) {
-    mines.insert(Position{rand() % this->width_, rand() % this->height_});
+  while (this->mine_pos_.size() < this->mine_count_) {
+    this->mine_pos_.insert(Position{rand() % this->width_, rand() % this->height_});
   }
 
   for (Position pos: mines) {
-    this->board_[pos.y][pos.x].InitCell(-1, pos);
+    this->cells_[pos.y][pos.x].InitCell(-1, pos);
   }
-  return mines;
 }
 
-Cell** Board::GenerateBoard(const int width, const int height, const int mines, Position start) {
+void Board::FillInValues() {
+  for (int row = 0; row < this->board_.height_; row++) {
+    for (int col = 0; col < this->board_.width_; col++) {
+      board::Cell curr_cell = this->board_.cells_[row][col];
+      curr_cell.InitCell(CountSurroundingMines(row, col), Position{row, col});
+    }
+  }
+}
+
+vector<vector<Cell>> Board::GenerateBoard(const int width, const int height, const int mines, Position start) {
   // Set start position to have value 0
-  this->board_[start.y][start.x].InitCell(0, start);
+  this->cells_[start.y][start.x].InitCell(0, start);
 
   // Randomly Place Mines and fill in rest of the board
   GenerateMines();
 //  FillInValues();
 
-  std::set<Cell> cells;
-  cells.insert(Cell(1, Position{2,2}));
-  cells.insert(Cell(2, Position{4,5}));
-  cells.insert(Cell(3, Position{2, 2}));
-  cells.insert(Cell(3, Position{1, 3}));
+//  std::set<Cell> cells;
+//  cells.insert(Cell(1, Position{2,2}));
+//  cells.insert(Cell(2, Position{4,5}));
+//  cells.insert(Cell(3, Position{2, 2}));
+//  cells.insert(Cell(3, Position{1, 3}));
 
+  return this->cells_;
 }
 
 }  // namespace board

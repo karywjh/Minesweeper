@@ -4,18 +4,14 @@
 #define FINALPROJECT_BOARD_H
 
 #include <mylibrary/cell.h>
+
 namespace board {
+
+using std::vector;
 
 const int kDefaultWidth = 9;
 const int kDefaultLength = 9;
 const int kDefaultMines = 10;
-
-struct Position {
-  int x;
-  int y;
-
-//  bool operator <(const Position& left, const Position& right);
-};
 
 class Board {
  public:
@@ -23,12 +19,14 @@ class Board {
   int height_;
   int mine_count_;
   Position start_pos_;
-  Cell** board_;
+  vector<vector<Cell>> board_;
 
   Board();
   Board(int width, int height, Position start);
   Board(int width, int height, int mine_count, Position start);
   // TBA: 3D Board
+  // TBA: Board with ID
+
 
   void InitProperties(const int width, const int height, const int mine_count);
 
@@ -45,7 +43,7 @@ class Board {
   // fill in the blank cells that are not mines.
   void FillInValues();
 
-  Cell** GenerateBoard(const int width, const int height, const int mines, Position start_pos);
+  Cell** GenerateBoard(const int width, const int height, const int mines, Position start);
 };
 
 

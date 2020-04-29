@@ -1,6 +1,9 @@
 // Copyright (c) 2020 [Your Name]. All rights reserved.
 
 #include <mylibrary/board.h>
+#include <set>
+
+#include <iostream>
 
 namespace board {
 
@@ -35,6 +38,30 @@ void Board::InitProperties(const int width, const int height,
   this->width_ = width;
   this->height_ = height;
   this->mine_count_ = mine_count;
+
+  // Set the size for Cell** board_
+  this->board_.resize(height);
+
+  for (int i = 0; i < height; i++) {
+    board_.at(i).resize(width);
+  }
+}
+
+
+Cell** Board::GenerateBoard(const int width, const int height, const int mines, Position start) {
+  // Set start position to have value 0
+  this->board_[start.y][start.x].InitCell(0, start);
+
+  // Randomly Place Mines and fill in rest of the board
+  GenerateMines();
+  FillInValues();
+
+  std::set<Cell> cells;
+  cells.insert(Cell(1, Position{2,2}));
+  cells.insert(Cell(2, Position{4,5}));
+  cells.insert(Cell(3, Position{2, 2}));
+  cells.insert(Cell(3, Position{1, 3}));
+
 }
 
 }  // namespace board

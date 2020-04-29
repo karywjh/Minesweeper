@@ -37,6 +37,7 @@ void MyApp::DrawStart(){
   // Letting User to Select Settings for Game
   // Initiate board_
   board_.InitProperties(16, 16, 40); // test code
+  board::Cell** cells = board_.GenerateBoard(16, 16, 40, board::Position{0, 0});
 }
 
 void MyApp::DrawGrid() {

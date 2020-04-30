@@ -8,6 +8,11 @@ Location::Location() : row_(0), col_(0) {}
 
 Location::Location(int row, int col) : row_(row), col_(col) {}
 
+bool Location::IsValidLoc(const int height, const int width) {
+  return (this->row_ >= 0) && (this->col_ >= 0) &&
+         (this->row_ < height) && (this->col_ < width);
+}
+
 bool Location::operator==(const Location& rhs) const {
   return row_ == rhs.row_ && col_ == rhs.col_;
 }

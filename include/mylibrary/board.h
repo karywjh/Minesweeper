@@ -34,11 +34,13 @@ class Board {
 
   void InitProperties(const int width, const int height, const int mine_count);
 
-  // Count total number of non-flagged mines left.
+  bool IsMine(const Location& loc);
+
+    // Count total number of non-flagged mines left.
   int GetMinesLeft();
 
   // Count how many mines is next to the cell.
-  int CountSurroundingMines(const int row, const int col);
+  int CountSurroundingMines(const Location& loc);
 
   // Randomly assign mines to cells.
   void GenerateMines();

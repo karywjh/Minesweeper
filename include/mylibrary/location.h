@@ -15,6 +15,8 @@ class Location {
   Location();
   Location(int row, int col);
 
+  bool IsValidLoc(const int height, const int width);
+
   // Comparison operators.
   bool operator()(const Location& lhs, const Location& rhs) const;
   bool operator==(const Location& rhs) const;

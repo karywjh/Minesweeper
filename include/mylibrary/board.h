@@ -24,7 +24,8 @@ class Board {
   vector<vector<Cell>> cells_;
   int id_; // id representing a board
 
-  set<Location> mine_pos_;
+  set<Location> non_mine_;
+  set<Location> mine_loc_;
 
   Board();
 //  Board(int width, int height, Location start);
@@ -54,7 +55,7 @@ class Board {
   // fill in the blank cells that are not mines.
   void FillInValues();
 
-  void GenerateBoard(const int width, const int height, const int mines, const Location& start);
+  void GenerateBoard(const Location& start);
 };
 
 

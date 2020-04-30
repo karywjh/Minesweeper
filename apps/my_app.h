@@ -6,11 +6,19 @@
 #include <cinder/app/App.h>
 #include <cinder/gl/Texture.h>
 
-#include <mylibrary/board.h>
+#include <mylibrary/engine.h>
 
 namespace myapp {
 
+using board::Engine;
+
 const int kCellSize_ = 30;
+
+enum class AppState {
+  kSetting,
+  kGame,
+  kGameEnd,
+};
 
 class MyApp : public cinder::app::App {
  public:
@@ -22,10 +30,12 @@ class MyApp : public cinder::app::App {
   void mouseDown(cinder::app::MouseEvent) override;
   void DrawStart();
   void DrawGrid();
+  void DrawLose();
+  void DrawWin();
 
-  board::Board board_;
-  ci::gl::TextureRef image1;
-  ci::gl::TextureRef image2;
+ private:
+  Engine engine_;
+  AppState state_;
 
 };
 

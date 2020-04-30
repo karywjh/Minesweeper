@@ -12,9 +12,12 @@
 namespace myapp {
 
 using cinder::app::KeyEvent;
+using cinder::app::MouseEvent;
 using cinder::Color;
 using cinder::Rectf;
 using std::vector;
+
+using board::Location;
 
 MyApp::MyApp() : board_{board::Board()} {}
 
@@ -34,7 +37,37 @@ void MyApp::draw() {
   DrawGrid();
 }
 
-void MyApp::keyDown(KeyEvent event) { }
+void MyApp::keyDown(KeyEvent event) {
+}
+
+void MyApp::mouseDown(MouseEvent event) {
+  if (event.isLeftDown()) {
+    int row = event.getY() / kCellSize_;
+    int col = event.getX() / kCellSize_;
+    std::cout << "Row: " << row << std::endl;
+    std::cout << "Col: " << col << std::endl;
+
+    this->board_.GenerateBoard(16, 16, 40, Location(row, col));
+
+    if (this->board_.cells_[row][col].state_ != board::Cell::CellState::FLAGGED) {
+      this->board_.cells_[row][col].ChangeState(board::Cell::CellState::OPENED);
+    }
+  }
+
+  if (event.isRightDown()) {
+    int row = event.getY() / kCellSize_;
+    int col = event.getX() / kCellSize_;
+
+    if (this->board_.cells_[row][col].state_ == board::Cell::CellState::FLAGGED) {
+      this->board_.cells_[row][col].ChangeState(board::Cell::CellState::COVERED);
+      this->board_.mine_count_++; // Total mine count increased by one
+    } else if (this->board_.cells_[row][col].state_ == board::Cell::CellState::COVERED) {
+      this->board_.cells_[row][col].ChangeState(board::Cell::CellState::FLAGGED);
+      this->board_.mine_count_--; // Total mine count decreased by one
+    }
+  }
+}
+
 
 void MyApp::DrawStart(){
   // Letting User to Select Settings for Game
@@ -44,7 +77,7 @@ void MyApp::DrawStart(){
 
 void MyApp::DrawGrid() {
   // Change the window size depending on the board size.
-  setWindowSize(board_.width_ * cell_size_, board_.height_ * cell_size_);
+  setWindowSize(board_.width_ * kCellSize_, board_.height_ * kCellSize_);
 
   this->board_.GenerateBoard(16, 16, 40, board::Location(0, 0));
   vector<vector<board::Cell>> board = this->board_.cells_;
@@ -53,8 +86,8 @@ void MyApp::DrawGrid() {
   for (int row = 0; row < this->board_.height_; row++) {
     for (int col = 0; col < this->board_.width_; col++) {
       board::Cell curr_cell = this->board_.cells_[row][col];
-      cinder::Rectf rect(col * cell_size_, row * cell_size_,
-                         (col + 1) * cell_size_, (row + 1) * cell_size_);
+      cinder::Rectf rect(col * kCellSize_, row * kCellSize_,
+                         (col + 1) * kCellSize_, (row + 1) * kCellSize_);
 
       cinder::gl::draw(curr_cell.image_,rect);
     }

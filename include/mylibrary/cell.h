@@ -51,7 +51,7 @@ class Cell {
    * @param new_state New state of the cell after player's move
    * @return image to be displayed after the change of state
    */
-  TextureRef GetChangedImage(CellState new_state);
+  void ChangeState(CellState new_state);
 };
 }  // namespace board
 

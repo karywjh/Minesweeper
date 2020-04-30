@@ -10,7 +10,7 @@
 
 namespace myapp {
 
-const int cell_size_ = 30;
+const int kCellSize_ = 30;
 
 class MyApp : public cinder::app::App {
  public:
@@ -19,7 +19,7 @@ class MyApp : public cinder::app::App {
   void update() override;
   void draw() override;
   void keyDown(cinder::app::KeyEvent) override;
-
+  void mouseDown(cinder::app::MouseEvent) override;
   void DrawStart();
   void DrawGrid();
 

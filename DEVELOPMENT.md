@@ -52,3 +52,4 @@
     - draw initial board
     - fill in values
     - generate full board
+    - open / flag / unflag functionality

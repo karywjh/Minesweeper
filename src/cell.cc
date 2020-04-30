@@ -28,7 +28,7 @@ void Cell::InitCell(int value, Location location) {
   this->location_ = location;
 }
 
-TextureRef Cell::GetChangedImage(CellState new_state) {
+void Cell::ChangeState(CellState new_state) {
   this->state_ = new_state;
 
   // change image corresponding to new state
@@ -47,7 +47,7 @@ TextureRef Cell::GetChangedImage(CellState new_state) {
 
     case CellState::OPENED: {
       // Display bomb image if value is -1 (cell is bomb)
-      if (this->value_ < -1) {
+      if (this->value_ < 0) {
         this->image_ = Texture::create(
             cinder::loadImage(cinder::app::loadAsset("Images/bomb.png")));
       } else {

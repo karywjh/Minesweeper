@@ -50,3 +50,5 @@
   * **April 29:**
     - generate mines
     - draw initial board
+    - fill in values
+    - generate full board

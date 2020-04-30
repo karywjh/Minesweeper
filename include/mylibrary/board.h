@@ -32,24 +32,29 @@ class Board {
   // TBA: 3D Board
   // TBA: Board with ID
 
+  // Initiate board with player selected width, height and mine_count
   void InitProperties(const int width, const int height, const int mine_count);
 
+  // True if the selected location is mine
   bool IsMine(const Location& loc);
 
-    // Count total number of non-flagged mines left.
+  // Get a set of all locations that are neighbors of a given location
+  set<Location> GetNeighbors(const Location& loc);
+
+  // Count total number of non-flagged mines left.
   int GetMinesLeft();
 
   // Count how many mines is next to the cell.
   int CountSurroundingMines(const Location& loc);
 
   // Randomly assign mines to cells.
-  void GenerateMines();
+  void GenerateMines(const Location& start);
 
   // Based on how many mines are around the cell,
   // fill in the blank cells that are not mines.
   void FillInValues();
 
-  void GenerateBoard(const int width, const int height, const int mines, Location start);
+  void GenerateBoard(const int width, const int height, const int mines, const Location& start);
 };
 
 

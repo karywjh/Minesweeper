@@ -51,7 +51,7 @@ bool Board::IsMine(const Location& loc) {
   return this->cells_[loc.Row()][loc.Col()].value_ < 0;
 }
 
-int Board::CountSurroundingMines(const Location& loc) {
+set<Location> Board::GetNeighbors(const Location& loc) {
   Location up = loc + Location(-1, 0);
   Location down = loc + Location(1, 0);
   Location right = loc + Location(0, 1);
@@ -61,48 +61,65 @@ int Board::CountSurroundingMines(const Location& loc) {
   Location down_right = loc + Location(1, 1);
   Location down_left = loc + Location(1, -1);
 
-  int mines = 0;
+  set<Location> neighbors;
 
-  if (up.IsValidLoc(this->height_, this->width_) && IsMine(up)) {
-    mines++;
+  if (up.IsValidLoc(this->height_, this->width_)) {
+    neighbors.insert(up);
   }
-  if (down.IsValidLoc(this->height_, this->width_) && IsMine(down)) {
-    mines++;
+  if (down.IsValidLoc(this->height_, this->width_)) {
+    neighbors.insert(down);
   }
-  if (right.IsValidLoc(this->height_, this->width_) && IsMine(right)) {
-    mines++;
+  if (right.IsValidLoc(this->height_, this->width_)) {
+    neighbors.insert(right);
   }
-  if (left.IsValidLoc(this->height_, this->width_) && IsMine(left)) {
-    mines++;
+  if (left.IsValidLoc(this->height_, this->width_)) {
+    neighbors.insert(left);
   }
-  if (up_right.IsValidLoc(this->height_, this->width_) && IsMine(up_right)) {
-    mines++;
+  if (up_right.IsValidLoc(this->height_, this->width_)) {
+    neighbors.insert(up_right);
   }
-  if (up_left.IsValidLoc(this->height_, this->width_) && IsMine(up_left)) {
-    mines++;
+  if (up_left.IsValidLoc(this->height_, this->width_)) {
+    neighbors.insert(up_left);
   }
-  if (down_right.IsValidLoc(this->height_, this->width_) && IsMine(down_right)) {
-    mines++;
+  if (down_right.IsValidLoc(this->height_, this->width_)) {
+    neighbors.insert(down_right);
   }
-  if (down_left.IsValidLoc(this->height_, this->width_) && IsMine(down_left)) {
-    mines++;
+  if (down_left.IsValidLoc(this->height_, this->width_)) {
+    neighbors.insert(down_left);
+  }
+
+  return neighbors;
+}
+
+
+int Board::CountSurroundingMines(const Location& loc) {
+  int mines = 0;
+  set<Location> neighbors = GetNeighbors(loc);
+
+  for (Location loc: neighbors) {
+    if (IsMine(loc)) {
+      mines++;
+    }
   }
 
   return mines;
 }
 
-void Board::GenerateMines() {
+void Board::GenerateMines(const Location& start) {
   srand(this->id_);
 
-//  this->mine_pos_.insert(Location(0, 0));
+  // All cells that are neighbor to starting location can't be mines
+  set<Location> non_mine_loc = GetNeighbors(start);
+  non_mine_loc.insert(start);
 
   // Generate Random Location to place mines.
   // Insert the Locations into the set.
   while (this->mine_pos_.size() <= this->mine_count_) {
-    this->mine_pos_.insert(Location(rand() % this->height_, rand() % this->width_));
+    Location new_loc = Location(rand() % this->height_, rand() % this->width_);
+    if (non_mine_loc.find(new_loc) == non_mine_loc.end()) {
+      this->mine_pos_.insert(new_loc);
+    }
   }
-
-//  this->mine_pos_.erase(Location(0, 0));
 
   for (Location loc: this->mine_pos_) {
     this->cells_[loc.Row()][loc.Col()].InitCell(-1, loc);
@@ -112,23 +129,21 @@ void Board::GenerateMines() {
 void Board::FillInValues() {
   for (int row = 0; row < this->height_; row++) {
     for (int col = 0; col < this->width_; col++) {
-      Cell curr_cell = this->cells_[row][col];
-
-      if (curr_cell.value_ >= 0) {
+      if (this->cells_[row][col].value_ >= 0) {
         Location loc = Location(row, col);
-        curr_cell.InitCell(CountSurroundingMines(loc), loc);
+        this->cells_[row][col].InitCell(CountSurroundingMines(loc), loc);
       }
     }
   }
 }
 
-void Board::GenerateBoard(const int width, const int height, const int mines, Location start) {
+void Board::GenerateBoard(const int width, const int height, const int mines, const Location& start) {
   // Set start location to have value 0
 //  this->start_loc_ = start;
   this->cells_[start.Row()][start.Col()].InitCell(0, start);
 
   // Randomly Place Mines and fill in rest of the board
-  GenerateMines();
+  GenerateMines(start);
   FillInValues();
 
 //  std::set<Location> loc;

@@ -110,7 +110,7 @@ void Board::GenerateMines(const Location& start) {
 
   // Generate Random Location to place mines.
   // Insert the Locations into the set.
-  while (this->mine_loc_.size() <= this->mine_count_) {
+  while (this->mine_loc_.size() < this->mine_count_) {
     Location new_loc = Location(rand() % this->height_, rand() % this->width_);
     if (this->non_mine_.find(new_loc) == this->non_mine_.end()) {
       this->mine_loc_.insert(new_loc);
@@ -127,8 +127,14 @@ void Board::FillInValues() {
     for (int col = 0; col < this->width_; col++) {
       if (this->cells_[row][col].value_ >= 0) {
         Location loc = Location(row, col);
-        this->cells_[row][col].InitCell(CountSurroundingMines(loc), loc);
         this->non_mine_.insert(loc);
+
+        int value = CountSurroundingMines(loc);
+        this->cells_[row][col].InitCell(value, loc);
+
+        if (value == 0) {
+          this->zero_cells_.insert(loc);
+        }
       }
     }
   }
@@ -139,7 +145,7 @@ void Board::GenerateBoard(const Location& start) {
   this->cells_[start.Row()][start.Col()].InitCell(0, start);
 
   // All cells that are neighbor to starting location can't be mines
-  this->non_mine_ =  GetNeighbors(start);
+  this->non_mine_ = GetNeighbors(start);
   this->non_mine_.insert(start);
 
   // Randomly Place Mines and fill in rest of the board
@@ -154,5 +160,44 @@ void Board::GenerateBoard(const Location& start) {
 //
 //  std::cout << loc.size() << std::endl;
 }
+
+void Board::AutoOpen(const Location& location, bool open_more) {
+  OpenNeighbors(location);
+//  OpenAllZeroNeighbors();
+
+//  for (Location loc : GetNeighbors(location)) {
+//    Op
+//  }
+
+//  if (this->cells_[location.Row()][location.Col()].value_ == 0) {
+////    OpenAllNeighbors(location);
+//    for (Location loc : GetNeighbors(location)) {
+//      this->cells_[loc.Row()][loc.Col()].ChangeState(
+//          board::Cell::CellState::OPENED);
+//    }
+}
+
+void Board::OpenNeighbors(const Location& location) {
+  if (this->cells_[location.Row()][location.Col()].value_ == 0) {
+    for (Location loc : GetNeighbors(location)) {
+
+      if (this->cells_[loc.Row()][loc.Col()].state_ != board::Cell::CellState::OPENED) {
+        this->cells_[loc.Row()][loc.Col()].ChangeState(
+            board::Cell::CellState::OPENED);
+        this->non_mine_.erase(loc);
+
+        OpenNeighbors(loc);
+      }
+    }
+  }
+}
+
+//void Board::OpenAllZeroNeighbors() {
+//  for (Location loc: this->zero_cells_) {
+//    if (this->cells_[loc.Row()][loc.Col()].value_ == 0 && this->cells_[row][col].state_ == board::Cell::CellState::OPENED) {
+//      OpenNeighbors(Location(row, col));
+//    }
+//  }
+//}
 
 }  // namespace board

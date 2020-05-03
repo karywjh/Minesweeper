@@ -29,8 +29,13 @@ void Engine::OpenCell(const int row, const int col) {
     this->board_.cells_[row][col].ChangeState(board::Cell::CellState::OPENED);
     this->board_.non_mine_.erase(Location(row, col));
 
+    // Auto open all neighbors of opened '0' cells
+//    this->board_.OpenAllZeroNeighbors();
+    this->board_.AutoOpen(Location(row, col), true);
+
     if (this->board_.IsMine(Location(row, col))) {
       this->state_ = GameState::kLose;
+      OpenAllMines();
     }
   }
 
@@ -50,6 +55,12 @@ void Engine::FlagCell(const int row, const int col) {
   }
 }
 
+void Engine::OpenAllMines() {
+  for (Location loc : this->board_.mine_loc_) {
+    this->board_.cells_[loc.Row()][loc.Col()].ChangeState(
+        board::Cell::CellState::OPENED);
+  }
+}
 
 Board Engine::GetBoard() {
   return this->board_;
@@ -58,6 +69,5 @@ Board Engine::GetBoard() {
 GameState Engine::GetState() {
   return this->state_;
 }
-
 
 }  // namespace board

@@ -26,6 +26,7 @@ class Board {
 
   set<Location> non_mine_;
   set<Location> mine_loc_;
+  set<Location> zero_cells_;
 
   Board();
 //  Board(int width, int height, Location start);
@@ -56,6 +57,12 @@ class Board {
   void FillInValues();
 
   void GenerateBoard(const Location& start);
+
+  void OpenNeighbors(const Location& location);
+
+  void OpenAllZeroNeighbors();
+
+  void AutoOpen(const Location& location, bool open_more);
 };
 
 

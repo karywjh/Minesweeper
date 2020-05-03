@@ -73,3 +73,6 @@
 * **April 30:**
     - made Engine class
     - made and draw basic end game ui and logic
+
+* **May 2:**
+    - open all mines when loses

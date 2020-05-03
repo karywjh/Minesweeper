@@ -34,6 +34,8 @@ class Engine {
   // Flagged cell will change to covered cell
   void FlagCell(const int row, const int col);
 
+  // Open all mines if player loses
+  void OpenAllMines();
 
   Board GetBoard();
   GameState GetState();

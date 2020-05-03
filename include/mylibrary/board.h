@@ -19,6 +19,7 @@ class Board {
  public:
   int width_;
   int height_;
+  int initial_mine_count_;
   int mine_count_;
   vector<vector<Cell>> cells_;
   int id_; // id representing a board

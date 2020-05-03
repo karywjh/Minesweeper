@@ -25,6 +25,7 @@ using board::Location;
 
 const char kNormalFont[] = "Arial";
 const char kDbPath[] = "minesweeper.db";
+const size_t kLimit = 3;
 
 MyApp::MyApp()
     : engine_{}, leaderboard_{cinder::app::getAssetPath(kDbPath).string()} {}
@@ -33,6 +34,20 @@ void MyApp::setup() {
 }
 
 void MyApp::update() {
+  if (this->engine_.GetState() == board::GameState::kWin) {
+    if (this->top_players_.empty()) {
+      leaderboard_.AddScoreToLeaderBoard(
+          {"Test", 0, this->engine_.GetBoard().id_,
+           this->engine_.GetBoard().width_, this->engine_.GetBoard().height_,
+           this->engine_.GetBoard().initial_mine_count_});
+
+      this->top_players_ = leaderboard_.RetrieveLeastTimes(kLimit);
+
+      // It is crucial the this vector be populated, given that `kLimit` > 0.
+      assert(!this->top_players_.empty());
+    }
+    return;
+  }
 }
 
 void MyApp::draw() {
@@ -92,7 +107,7 @@ void MyApp::mouseDown(MouseEvent event) {
 void MyApp::DrawStart() {
   // Letting User to Select Settings for Game
   // Initiate board_
-  engine_.Init(60, 20, 200); // TODO: Change numbers later
+  engine_.Init(16, 16, 40); // TODO: Change numbers later
 
   // Change the window size depending on the board size.
   board::Board board = this->engine_.GetBoard();

@@ -31,6 +31,7 @@ class MyApp : public cinder::app::App {
  private:
   Engine engine_;
   board::LeaderBoard leaderboard_;
+  std::vector<board::Player> top_players_;
 };
 
 }  // namespace myapp

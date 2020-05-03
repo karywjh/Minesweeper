@@ -11,6 +11,7 @@ namespace board {
 Board::Board() {
   this->width_ = kDefaultWidth;
   this->height_ = kDefaultLength;
+  this->initial_mine_count_ = kDefaultMines;
   this->mine_count_ = kDefaultMines;
   this->id_ = time(NULL);
 
@@ -21,6 +22,7 @@ void Board::InitProperties(const int width, const int height,
                            const int mine_count) {
   this->width_ = width;
   this->height_ = height;
+  this->initial_mine_count_ = mine_count;
   this->mine_count_ = mine_count;
 
   // Set the size for 2D Cell vector
@@ -75,7 +77,7 @@ int Board::CountSurroundingMines(const Location& loc) {
 void Board::GenerateMines(const Location& start) {
   srand(this->id_);
 
-  while (this->mine_loc_.size() < this->mine_count_) {
+  while (this->mine_loc_.size() < this->initial_mine_count_) {
     // Generate Random Location to place mines.
     // Insert the Locations into the set.
     Location new_loc = Location(rand() % this->height_, rand() % this->width_);

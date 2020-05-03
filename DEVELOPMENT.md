@@ -76,3 +76,4 @@
 
 * **May 2:**
     - open all mines when loses
+    - auto open zero-valued cells

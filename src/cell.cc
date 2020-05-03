@@ -9,6 +9,7 @@ using cinder::gl::Texture;
 
 Cell::Cell() {
   this->value_ = 0;
+  this->real_value_ = 0;
   this->state_ = CellState::COVERED;
   this->image_ = Texture::create(cinder::loadImage(
       cinder::app::loadAsset("Images/facingDown.png")));
@@ -16,16 +17,22 @@ Cell::Cell() {
 }
 
 Cell::Cell(int value, Location location) {
-    this->value_ = value;
-    this->state_ = CellState::COVERED;
-    this->image_ = Texture::create(cinder::loadImage(
-        cinder::app::loadAsset("Images/facingDown.png")));
-    this->location_ = location;
+  this->value_ = value;
+  this->real_value_ = value;
+  this->state_ = CellState::COVERED;
+  this->image_ = Texture::create(cinder::loadImage(
+      cinder::app::loadAsset("Images/facingDown.png")));
+  this->location_ = location;
 }
 
 void Cell::InitCell(int value, Location location) {
   this->value_ = value;
+  this->real_value_ = value;
   this->location_ = location;
+}
+
+bool Cell::IsSafe() {
+  return this->real_value_ >= 0;
 }
 
 void Cell::ChangeState(CellState new_state) {

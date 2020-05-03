@@ -31,6 +31,7 @@ class Cell {
   };
 
   int value_; // #0-8, or -1 as mine
+  int real_value_; // decrease as mines around are opened
   TextureRef image_; // displayed in GUI corresponding to its state & value
   CellState state_;
   Location location_;
@@ -44,6 +45,8 @@ class Cell {
    * @param location location of Cell
    */
   void InitCell(int value, Location location);
+
+  bool IsSafe();
 
   /**
    * Get the Image texture after cell state had been changed.

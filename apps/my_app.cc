@@ -48,6 +48,7 @@ void MyApp::draw() {
       break;
     }
     case board::GameState::kLose: {
+      this->engine_.OpenAllMines();
       DrawGrid();
       DrawLose();
       break;

@@ -25,18 +25,23 @@ bool Engine::StartGame(const int row, const int col) {
 }
 
 void Engine::OpenCell(const int row, const int col) {
-  if (this->board_.cells_[row][col].state_ != board::Cell::CellState::FLAGGED) {
+  if (this->board_.cells_[row][col].state_ == board::Cell::CellState::COVERED) {
     this->board_.cells_[row][col].ChangeState(board::Cell::CellState::OPENED);
     this->board_.non_mine_.erase(Location(row, col));
 
     // Auto open all neighbors of opened '0' cells
-//    this->board_.OpenAllZeroNeighbors();
-    this->board_.AutoOpen(Location(row, col), true);
+    this->board_.OpenZeroNeighbors(Location(row, col));
 
     if (this->board_.IsMine(Location(row, col))) {
       this->state_ = GameState::kLose;
-      OpenAllMines();
     }
+  } else if (this->board_.cells_[row][col].state_ == board::Cell::CellState::OPENED) {
+    if (!this->board_.cells_[row][col].IsSafe()) {
+      this->state_ = GameState::kLose;
+    }
+
+    // Open neighbors if all mines around it is correctly flagged
+    this->board_.OpenNeighbors(Location(row, col));
   }
 
   if (this->board_.non_mine_.empty()) {
@@ -49,9 +54,13 @@ void Engine::FlagCell(const int row, const int col) {
     this->board_.cells_[row][col].ChangeState(board::Cell::CellState::COVERED);
     this->board_.mine_count_++; // Total mine count increased by one
 
+    this->board_.UpdateNeighbor(Location(row, col), false);
+
   } else if (this->board_.cells_[row][col].state_ == board::Cell::CellState::COVERED) {
     this->board_.cells_[row][col].ChangeState(board::Cell::CellState::FLAGGED);
     this->board_.mine_count_--; // Total mine count decreased by one
+
+    this->board_.UpdateNeighbor(Location(row, col), true);
   }
 }
 

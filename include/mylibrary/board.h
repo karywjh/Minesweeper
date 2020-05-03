@@ -56,13 +56,25 @@ class Board {
   // fill in the blank cells that are not mines.
   void FillInValues();
 
+  // Generate whole board
   void GenerateBoard(const Location& start);
 
+  // Open all neighbors of already opened cells
+  void OpenZeroNeighbors(const Location& location);
+
+  // Open non-mine neighbor cells of this location
+  // Called when an opened cell is clicked
   void OpenNeighbors(const Location& location);
 
-  void OpenAllZeroNeighbors();
+  // Call ChangeNeighborVals to change values of neighbors
+  // based on boolean to_flag (true if cell is to be flagged):
+  // If location is flagged correctly: +- real value of cell by 1
+  // If location is flagged incorrectly: +- real value of cell by 10
+  void UpdateNeighbor(const Location& location, const bool to_flag);
 
-  void AutoOpen(const Location& location, bool open_more);
+  // Change real value of neighbor cells by val passed in
+  void ChangeNeighborVals(const Location& location, const int val);
+
 };
 
 

@@ -16,6 +16,8 @@ class LeaderBoard {
   // Adds a player to the leaderboard.
 //  void AddScoreToLeaderBoard();
 
+ private:
+  sqlite::database db_;
 };
 
 }  // namespace board

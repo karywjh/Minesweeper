@@ -79,3 +79,6 @@
     - auto open zero-valued cells
     - auto open safe cells when clicked on opened cells
     - wrote comments and clean codes
+    
+* **May 2:**
+    - debugged and fixed cmake to include library SQLite

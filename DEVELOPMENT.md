@@ -11,7 +11,7 @@
     - [x] Cell class
         - [x] Store images and values
         - [x] Change image after player's move
-    - [ ] Engine class
+    - [x] Engine class
         
 - UI:
     - [ ] Draw starting UI, where user can choose board difficulties
@@ -20,7 +20,7 @@
     - [ ] Top bar to display game info
         - [ ] Time and mines left
         - [ ] "New" game button, setting button
-    - [ ] Update board after player's move
+    - [x] Update board after player's move
     - [ ] Ending UI if player wins/loses
     
 - Database:
@@ -29,8 +29,8 @@
     - [ ] Display scores for board with same id
     
 - Additional
-    - [ ] auto-opening
-        - [ ] click on opened cells to auto-open neighbors
+    - [x] auto-opening
+        - [x] click on opened cells to auto-open neighbors
     - [ ] Play board by ID
     - [ ] 3D Board
     
@@ -77,3 +77,5 @@
 * **May 2:**
     - open all mines when loses
     - auto open zero-valued cells
+    - auto open safe cells when clicked on opened cells
+    - wrote comments and clean codes

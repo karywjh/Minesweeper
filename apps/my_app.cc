@@ -24,9 +24,10 @@ using std::vector;
 using board::Location;
 
 const char kNormalFont[] = "Arial";
+const char kDbPath[] = "minesweeper.db";
 
 MyApp::MyApp()
-    : engine_{}, state_{AppState::kSetting} {}
+    : engine_{}, leaderboard_{cinder::app::getAssetPath(kDbPath).string()} {}
 
 void MyApp::setup() {
 }
@@ -91,7 +92,7 @@ void MyApp::mouseDown(MouseEvent event) {
 void MyApp::DrawStart() {
   // Letting User to Select Settings for Game
   // Initiate board_
-  engine_.Init(16, 16, 40); // TODO: Change numbers later
+  engine_.Init(60, 20, 200); // TODO: Change numbers later
 
   // Change the window size depending on the board size.
   board::Board board = this->engine_.GetBoard();

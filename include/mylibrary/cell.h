@@ -10,16 +10,6 @@ namespace board {
 
 using cinder::gl::TextureRef;
 using board::Location;
-// Position of Cells start from {0, 0}
-//struct Position {
-//  int row;
-//  int col;
-//
-//  bool operator<(const Position& position) const {
-//    return (row < position.row) ||
-//           (col < position.col);
-//  }
-//};
 
 class Cell {
  public:

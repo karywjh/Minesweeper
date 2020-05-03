@@ -7,18 +7,13 @@
 #include <cinder/gl/Texture.h>
 
 #include <mylibrary/engine.h>
+#include <mylibrary/leaderboard.h>
 
 namespace myapp {
 
 using board::Engine;
 
 const int kCellSize_ = 30;
-
-enum class AppState {
-  kSetting,
-  kGame,
-  kGameEnd,
-};
 
 class MyApp : public cinder::app::App {
  public:
@@ -35,8 +30,7 @@ class MyApp : public cinder::app::App {
 
  private:
   Engine engine_;
-  AppState state_;
-
+  board::LeaderBoard leaderboard_;
 };
 
 }  // namespace myapp

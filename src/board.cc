@@ -17,22 +17,6 @@ Board::Board() {
 //  this->start_loc_ = Location(0, 0);
 }
 
-// unused
-//Board::Board(int width, int height, Location start) {
-//  this->width_ = width;
-//  this->height_ = height;
-//  this->mine_count_ = width * height / 5;
-//  this->start_loc_ = start;
-//}
-//
-//// unused
-//Board::Board(int width, int height, int mine_count, Location start) {
-//  this->width_ = width;
-//  this->height_ = height;
-//  this->mine_count_ = mine_count;
-//  this->start_loc_ = start;
-//}
-
 void Board::InitProperties(const int width, const int height,
                            const int mine_count) {
   this->width_ = width;
@@ -151,7 +135,8 @@ void Board::OpenZeroNeighbors(const Location& location) {
   if (this->cells_[location.Row()][location.Col()].value_ == 0) {
     for (Location loc: GetNeighbors(location)) {
 
-      if (this->cells_[loc.Row()][loc.Col()].state_ != board::Cell::CellState::OPENED) {
+      if (this->cells_[loc.Row()][loc.Col()].state_ !=
+          board::Cell::CellState::OPENED) {
         this->cells_[loc.Row()][loc.Col()].ChangeState(
             board::Cell::CellState::OPENED);
         this->non_mine_.erase(loc);

@@ -37,6 +37,10 @@ class Engine {
   // Open all mines if player loses
   void OpenAllMines();
 
+  // Change state if player loses or win
+  void SetGameState(const int row, const int col);
+
+
   Board GetBoard();
   GameState GetState();
 

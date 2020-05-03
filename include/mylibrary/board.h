@@ -20,7 +20,6 @@ class Board {
   int width_;
   int height_;
   int mine_count_;
-//  Location start_loc_;
   vector<vector<Cell>> cells_;
   int id_; // id representing a board
 
@@ -29,8 +28,6 @@ class Board {
   set<Location> zero_cells_;
 
   Board();
-//  Board(int width, int height, Location start);
-//  Board(int width, int height, int mine_count, Location start);
   // TBA: 3D Board
   // TBA: Board with ID
 

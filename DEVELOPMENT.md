@@ -89,3 +89,4 @@
     
 * **May 5:**
     - use ImGui, draw basic starting ImGui window for setting
+    - draw ui & implemented drawStart to let player select difficulty or customize difficulty

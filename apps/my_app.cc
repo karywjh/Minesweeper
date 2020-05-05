@@ -28,6 +28,13 @@ const char kNormalFont[] = "Arial";
 const char kDbPath[] = "minesweeper.db";
 const size_t kLimit = 3;
 
+const size_t kWidthMin = 7;
+const size_t kWidthMax = 60;
+const size_t kHeightMin = 7;
+const size_t kHeightMax = 25;
+const size_t kMinesMin = 10;
+
+
 MyApp::MyApp()
     : engine_{}, leaderboard_{cinder::app::getAssetPath(kDbPath).string()} {}
 
@@ -97,7 +104,6 @@ void MyApp::keyDown(KeyEvent event) {
     if (event.getCode() == KeyEvent::KEY_RETURN ||
         event.getCode() == KeyEvent::KEY_KP_ENTER) {
       this->engine_.state_ = board::GameState::kNotStarted;
-      engine_.Init(16, 16, 40); // TODO: Change numbers later
     }
   }
 
@@ -126,19 +132,58 @@ void MyApp::mouseDown(MouseEvent event) {
   }
 }
 
-
+// Letting User to Select Settings for Game
+// Initiate board_
 void MyApp::DrawStart() {
-  // Letting User to Select Settings for Game
-  // Initiate board_
-
   // Initiate setting window
   ui::ScopedWindow window("Settings");
   ui::SetWindowPos(ImVec2(0, 0));
   ui::SetWindowSize(cinder::app::getWindowSize());
 
-  ui::InputText("##text1", "width", 100);
-  int h = this->engine_.GetBoard().height_;
-  ui::SliderInt("height", &h, 2, 20);
+  // Set three level buttons
+  if (ui::Button("Beginner (9x9, 10 mines)", ImVec2(ui::GetWindowWidth(), 0))) {
+    this->engine_.Init(9, 9, 10);
+    this->engine_.state_ = board::GameState::kNotStarted;
+    return;
+  }
+
+  if (ui::Button("Intermediate (16x16, 40 mines)",
+                 ImVec2(ui::GetWindowWidth(), 0))) {
+    this->engine_.Init(16, 16, 40);
+    this->engine_.state_ = board::GameState::kNotStarted;
+    return;
+  }
+
+  if (ui::Button("Advanced (16x30, 99 mines)",
+                 ImVec2(ui::GetWindowWidth(), 0))) {
+    this->engine_.Init(30, 16, 99);
+    this->engine_.state_ = board::GameState::kNotStarted;
+    return;
+  }
+
+  if (ui::TreeNode("Custom")) {
+    ui::Indent();
+
+    // Sliders for width, height, mines.
+    int width = this->engine_.GetBoard().width_;
+    ui::SliderInt("width", &width, kWidthMin, kWidthMax);
+
+    int height = this->engine_.GetBoard().height_;
+    ui::SliderInt("height", &height, kHeightMin, kHeightMax);
+
+    int mines = this->engine_.GetBoard().mine_count_;
+    int max = int (width * height * 0.8);
+    ui::SliderInt("mine count", &mines, kMinesMin, max);
+
+    ui::Unindent();
+
+    if (ui::Button("Start")) {
+      this->engine_.state_ = board::GameState::kNotStarted;
+    }
+
+    this->engine_.Init(width, height, mines);
+    ui::TreePop();
+  }
 }
 
 void MyApp::DrawGrid() {

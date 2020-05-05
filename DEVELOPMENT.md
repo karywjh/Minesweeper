@@ -80,5 +80,12 @@
     - auto open safe cells when clicked on opened cells
     - wrote comments and clean codes
     
-* **May 2:**
+* **May 3:**
     - debugged and fixed cmake to include library SQLite
+
+* **May 4:**
+    - searched and find ways to get user text input in settings
+    - investigated on ImGui on text input and sliders
+    
+* **May 5:**
+    - use ImGui, draw basic starting ImGui window for setting

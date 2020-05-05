@@ -23,6 +23,7 @@ class MyApp : public cinder::app::App {
   void draw() override;
   void keyDown(cinder::app::KeyEvent) override;
   void mouseDown(cinder::app::MouseEvent) override;
+  void ResetGame();
   void DrawStart();
   void DrawGrid();
   void DrawLose();

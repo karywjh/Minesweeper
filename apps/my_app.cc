@@ -2,10 +2,11 @@
 
 #include "my_app.h"
 
+#include <CinderImGui.h>
 #include <cinder/app/Window.h>
 #include <cinder/gl/draw.h>
-#include <cinder/gl/wrapper.h>
 #include <cinder/gl/gl.h>
+#include <cinder/gl/wrapper.h>
 
 #include <vector>
 
@@ -31,6 +32,13 @@ MyApp::MyApp()
     : engine_{}, leaderboard_{cinder::app::getAssetPath(kDbPath).string()} {}
 
 void MyApp::setup() {
+//  ui::ScopedWindow window("Settings");
+//  bool start = true;
+//  ui::SetWindowPos(ImVec2(0, 0));
+//  ui::SetWindowSize(cinder::app::getWindowSize());
+//  ui::Begin("Settings", &start, ImGuiWindowFlags_NoResize);
+    ui::initialize();
+
 }
 
 void MyApp::update() {
@@ -57,8 +65,15 @@ void MyApp::draw() {
   board::GameState game_state = this->engine_.GetState();
 
   switch (game_state) {
-    case board::GameState::kNotStarted:
+    case board::GameState::kSetting:
       DrawStart();
+      break;
+    case board::GameState::kNotStarted: {
+      // Change the window size depending on the board size.
+      setWindowSize(this->engine_.GetBoard().width_ * kCellSize_, this->engine_.GetBoard().height_ * kCellSize_);
+      DrawGrid();
+      break;
+    }
     case board::GameState::kPlaying: {
       DrawGrid();
       break;
@@ -78,6 +93,14 @@ void MyApp::draw() {
 }
 
 void MyApp::keyDown(KeyEvent event) {
+  if (this->engine_.state_ == board::GameState::kSetting) {
+    if (event.getCode() == KeyEvent::KEY_RETURN ||
+        event.getCode() == KeyEvent::KEY_KP_ENTER) {
+      this->engine_.state_ = board::GameState::kNotStarted;
+      engine_.Init(16, 16, 40); // TODO: Change numbers later
+    }
+  }
+
 }
 
 void MyApp::mouseDown(MouseEvent event) {
@@ -107,11 +130,15 @@ void MyApp::mouseDown(MouseEvent event) {
 void MyApp::DrawStart() {
   // Letting User to Select Settings for Game
   // Initiate board_
-  engine_.Init(16, 16, 40); // TODO: Change numbers later
 
-  // Change the window size depending on the board size.
-  board::Board board = this->engine_.GetBoard();
-  setWindowSize(board.width_ * kCellSize_, board.height_ * kCellSize_);
+  // Initiate setting window
+  ui::ScopedWindow window("Settings");
+  ui::SetWindowPos(ImVec2(0, 0));
+  ui::SetWindowSize(cinder::app::getWindowSize());
+
+  ui::InputText("##text1", "width", 100);
+  int h = this->engine_.GetBoard().height_;
+  ui::SliderInt("height", &h, 2, 20);
 }
 
 void MyApp::DrawGrid() {
@@ -168,6 +195,11 @@ void MyApp::DrawWin() {
   std::stringstream s;
   s << "You Win!";
   PrintText(s.str(), Color::white(), size, center);
+}
+
+void MyApp::ResetGame() {
+  this->engine_.Reset();
+  this->top_players_.clear();
 }
 
 

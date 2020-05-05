@@ -2,6 +2,7 @@
 
 #include <mylibrary/cell.h>
 #include <cinder/app/App.h>
+#include "cinder/app/RendererGl.h"
 
 namespace board {
 
@@ -57,6 +58,8 @@ void Cell::ChangeState(CellState new_state) {
       if (this->value_ < 0) {
         this->image_ = Texture::create(
             cinder::loadImage(cinder::app::loadAsset("Images/bomb.png")));
+//        this->image_ = Texture::create(
+//            cinder::loadImage(cinder::loadUrl("https://images.app.goo.gl/LppZ3YmX2f2h2fm38")));
       } else {
         this->image_ = Texture::create(cinder::loadImage(cinder::app::loadAsset(
             "Images/" + std::to_string(this->value_) + ".png")));

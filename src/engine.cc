@@ -5,7 +5,7 @@
 namespace board {
 
 Engine::Engine()
-    : board_{Board()}, state_{GameState::kNotStarted} {}
+    : board_{Board()}, state_{GameState::kSetting} {}
 
 
 void Engine::Init(const int width, const int height, const int mines) {
@@ -72,6 +72,11 @@ void Engine::SetGameState(const int row, const int col) {
   if (this->board_.non_mine_.empty()) {
     this->state_ = GameState::kWin;
   }
+}
+
+void Engine::Reset() {
+  this->board_ = Board();
+  this->state_ = GameState::kNotStarted;
 }
 
 Board Engine::GetBoard() {

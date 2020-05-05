@@ -8,6 +8,7 @@
 namespace board {
 
 enum class GameState {
+  kSetting,
   kNotStarted,
   kPlaying,
   kWin,
@@ -40,11 +41,11 @@ class Engine {
   // Change state if player loses or win
   void SetGameState(const int row, const int col);
 
+  void Reset();
 
   Board GetBoard();
   GameState GetState();
 
- private:
   Board board_;
   GameState state_;
 };

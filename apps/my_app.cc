@@ -9,6 +9,7 @@
 #include <cinder/gl/wrapper.h>
 
 #include <vector>
+#include <chrono>
 
 namespace myapp {
 
@@ -21,6 +22,10 @@ using cinder::TextBox;
 
 using std::string;
 using std::vector;
+using std::chrono::system_clock;
+using std::chrono::duration_cast;
+using std::chrono::seconds;
+
 
 using board::Location;
 
@@ -36,7 +41,10 @@ const size_t kMinesMin = 10;
 
 
 MyApp::MyApp()
-    : engine_{}, leaderboard_{cinder::app::getAssetPath(kDbPath).string()} {}
+    : engine_{},
+      leaderboard_{cinder::app::getAssetPath(kDbPath).string()},
+      start_time_{system_clock::now()},
+      game_time_{0} {}
 
 void MyApp::setup() {
 //  ui::ScopedWindow window("Settings");
@@ -52,7 +60,7 @@ void MyApp::update() {
   if (this->engine_.GetState() == board::GameState::kWin) {
     if (this->top_players_.empty()) {
       leaderboard_.AddScoreToLeaderBoard(
-          {"Test", 0, this->engine_.GetBoard().id_,
+          {"Test1", this->game_time_, this->engine_.GetBoard().id_,
            this->engine_.GetBoard().width_, this->engine_.GetBoard().height_,
            this->engine_.GetBoard().initial_mine_count_});
 
@@ -87,11 +95,13 @@ void MyApp::draw() {
     }
     case board::GameState::kLose: {
       this->engine_.OpenAllMines();
+      this->game_time_ = (duration_cast<seconds>(system_clock::now() - this->start_time_)).count();
       DrawGrid();
       DrawLose();
       break;
     }
     case board::GameState::kWin: {
+      this->game_time_ = (duration_cast<seconds>(system_clock::now() - this->start_time_)).count();
       DrawGrid();
       DrawWin();
       break;
@@ -118,6 +128,7 @@ void MyApp::mouseDown(MouseEvent event) {
     if (game_state == board::GameState::kNotStarted && this->engine_.StartGame(row, col)) {
       this->engine_.OpenCell(row, col);
       // TODO: Start timer
+      this->start_time_ = system_clock::now();
     }
 
     if (game_state == board::GameState::kPlaying) {

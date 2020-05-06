@@ -8,7 +8,6 @@
 #include <cinder/gl/gl.h>
 #include <cinder/gl/wrapper.h>
 
-#include <vector>
 #include <chrono>
 #include <string>
 #include <cstring>
@@ -50,7 +49,8 @@ MyApp::MyApp()
       leaderboard_{cinder::app::getAssetPath(kDbPath).string()},
       start_time_{system_clock::now()},
       game_time_{0},
-      update_scores_{false} {}
+      update_scores_{false},
+      name_{"N/A"} {}
 
 void MyApp::setup() {
     ui::initialize();
@@ -60,7 +60,7 @@ void MyApp::update() {
   if (this->update_scores_) {
     if (this->top_overall_players_.empty()) {
       leaderboard_.AddScoreToLeaderBoard(
-          {"Test2", this->game_time_, this->engine_.GetBoard().id_,
+          {this->name_, this->game_time_, this->engine_.GetBoard().id_,
            this->engine_.GetBoard().width_, this->engine_.GetBoard().height_,
            this->engine_.GetBoard().initial_mine_count_});
 
@@ -158,6 +158,16 @@ void MyApp::DrawStart() {
   ui::ScopedWindow window("Settings");
   ui::SetWindowPos(ImVec2(0, 0));
   ui::SetWindowSize(cinder::app::getWindowSize());
+
+  if (ui::InputText("Name", &this->name_, 24)) {
+    std::cout << this->name_ << std::endl;
+  }
+
+  // Set id
+  int id = this->engine_.board_.id_;
+  if (ui::InputInt("Board ID", &id)) {
+    this->engine_.board_.id_ = id;
+  }
 
   // Set three level buttons
   if (ui::Button("Beginner (9x9, 10 mines)", ImVec2(ui::GetWindowWidth(), 0))) {
@@ -326,6 +336,7 @@ void MyApp::ResetGame() {
   this->top_overall_players_.clear();
   this->top_id_players_.clear();
   this->update_scores_ = false;
+  this->name_ = "N/A";
 }
 
 

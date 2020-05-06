@@ -38,6 +38,7 @@ class MyApp : public cinder::app::App {
   std::chrono::time_point<std::chrono::system_clock> start_time_;
   int game_time_;
   bool update_scores_;
+  std::string name_;
 };
 
 }  // namespace myapp

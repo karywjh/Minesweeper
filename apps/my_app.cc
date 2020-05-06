@@ -10,6 +10,11 @@
 
 #include <vector>
 #include <chrono>
+#include <string>
+#include <cstring>
+#include <sstream>
+
+
 
 namespace myapp {
 
@@ -44,30 +49,33 @@ MyApp::MyApp()
     : engine_{},
       leaderboard_{cinder::app::getAssetPath(kDbPath).string()},
       start_time_{system_clock::now()},
-      game_time_{0} {}
+      game_time_{0},
+      update_scores_{false} {}
 
 void MyApp::setup() {
-//  ui::ScopedWindow window("Settings");
-//  bool start = true;
-//  ui::SetWindowPos(ImVec2(0, 0));
-//  ui::SetWindowSize(cinder::app::getWindowSize());
-//  ui::Begin("Settings", &start, ImGuiWindowFlags_NoResize);
     ui::initialize();
-
 }
 
 void MyApp::update() {
-  if (this->engine_.GetState() == board::GameState::kWin) {
-    if (this->top_players_.empty()) {
+  if (this->update_scores_) {
+    if (this->top_overall_players_.empty()) {
       leaderboard_.AddScoreToLeaderBoard(
-          {"Test1", this->game_time_, this->engine_.GetBoard().id_,
+          {"Test2", this->game_time_, this->engine_.GetBoard().id_,
            this->engine_.GetBoard().width_, this->engine_.GetBoard().height_,
            this->engine_.GetBoard().initial_mine_count_});
 
-      this->top_players_ = leaderboard_.RetrieveLeastTimes(kLimit);
+      this->top_overall_players_ = leaderboard_.RetrieveLeastTimes(
+          this->engine_.board_.width_, this->engine_.board_.height_,
+          this->engine_.board_.mine_count_, kLimit);
+
+      this->top_id_players_ = leaderboard_.RetrieveLeastTimes(
+          this->engine_.board_.id_, this->engine_.board_.width_,
+          this->engine_.board_.height_, this->engine_.board_.mine_count_,
+          kLimit);
 
       // It is crucial the this vector be populated, given that `kLimit` > 0.
-      assert(!this->top_players_.empty());
+      assert(!this->top_overall_players_.empty());
+      assert(!this->top_id_players_.empty());
     }
     return;
   }
@@ -95,13 +103,13 @@ void MyApp::draw() {
     }
     case board::GameState::kLose: {
       this->engine_.OpenAllMines();
-      this->game_time_ = (duration_cast<seconds>(system_clock::now() - this->start_time_)).count();
       DrawGrid();
       DrawLose();
       break;
     }
     case board::GameState::kWin: {
       this->game_time_ = (duration_cast<seconds>(system_clock::now() - this->start_time_)).count();
+      this->update_scores_ = true;
       DrawGrid();
       DrawWin();
       break;
@@ -173,7 +181,7 @@ void MyApp::DrawStart() {
   }
 
   if (ui::TreeNode("Custom")) {
-    ui::Indent();
+    ui::Unindent();
 
     // Sliders for width, height, mines.
     int width = this->engine_.GetBoard().width_;
@@ -185,8 +193,6 @@ void MyApp::DrawStart() {
     int mines = this->engine_.GetBoard().mine_count_;
     int max = int (width * height * 0.8);
     ui::SliderInt("mine count", &mines, kMinesMin, max);
-
-    ui::Unindent();
 
     if (ui::Button("Start")) {
       this->engine_.state_ = board::GameState::kNotStarted;
@@ -256,11 +262,45 @@ void MyApp::DrawWin() {
   std::stringstream s;
   s << "You Win!";
   PrintText(s.str(), Color::white(), size, center);
+
+  ui::ScopedWindow window("Game Ends");
+  ui::SetWindowPos(ImVec2(0, 0));
+  ui::SetWindowSize(cinder::app::getWindowSize());
+
+  ui::SetCursorPosX(cinder::app::getWindowWidth() / 2 - 35);
+  ui::AlignTextToFramePadding();
+  ui::SetWindowFontScale(1.5);
+  ui::Text("You Win!");
+
+  if (ui::TreeNode("Overall Top")) {
+    for (board::Player player: this->top_overall_players_) {
+      ui::AlignTextToFramePadding();
+
+      std::string name = player.name;
+      char cstr[name.size() + 1];
+      strcpy(cstr, name.c_str());
+      ui::Text(cstr);
+
+      ui::SameLine(cinder::app::getWindowWidth() - 30);
+
+      std::stringstream ss;
+      ss << player.time;
+      char const *pchar = (char*) ss.str().c_str();
+      ui::Text(pchar);
+    }
+    ui::TreePop();
+  }
+
+  if (ui::Button("New Game", ImVec2(ui::GetWindowWidth(), 0))) {
+    ResetGame();
+  }
 }
 
 void MyApp::ResetGame() {
   this->engine_.Reset();
-  this->top_players_.clear();
+  this->top_overall_players_.clear();
+  this->top_id_players_.clear();
+  this->update_scores_ = false;
 }
 
 

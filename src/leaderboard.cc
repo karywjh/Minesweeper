@@ -46,16 +46,39 @@ std::vector<Player> GetPlayers(sqlite::database_binder* rows) {
   return players;
 }
 
-std::vector<Player> LeaderBoard::RetrieveLeastTimes(const size_t limit) {
-  auto rows = db_ << "select name, time from leaderboard order by time ASC limit ?;"
+// Includes all players
+std::vector<Player> LeaderBoard::RetrieveLeastTimes(const int width,
+                                                    const int height,
+                                                    const int mines,
+                                                    const size_t limit) {
+  auto rows = db_ << "select name, time from leaderboard where width=? and height=? and mines=? order by time ASC limit ?;"
+                  << width
+                  << height
+                  << mines
                   << limit;
   return GetPlayers(&rows);
 }
 
+// Same Player's highest scores
 std::vector<Player> LeaderBoard::RetrieveLeastTimes(const Player& player,
-                                               const size_t limit) {
+                                                    const size_t limit) {
   auto rows = db_ << "select name, time from leaderboard where name=? order by time ASC limit ?;"
                   << player.name
+                  << limit;
+  return GetPlayers(&rows);
+}
+
+std::vector<Player> LeaderBoard::RetrieveLeastTimes(const int id,
+                                                    const int width,
+                                                    const int height,
+                                                    const int mines,
+                                                    const size_t limit) {
+  auto rows = db_ << "select name, time from leaderboard where id=? and width=? "
+                     "and height=? and mines=? order by time ASC limit ?;"
+                  << id
+                  << width
+                  << height
+                  << mines
                   << limit;
   return GetPlayers(&rows);
 }

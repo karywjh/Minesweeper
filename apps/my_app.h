@@ -32,10 +32,12 @@ class MyApp : public cinder::app::App {
  private:
   Engine engine_;
   board::LeaderBoard leaderboard_;
-  std::vector<board::Player> top_players_;
+  std::vector<board::Player> top_overall_players_;
+  std::vector<board::Player> top_id_players_;
 
   std::chrono::time_point<std::chrono::system_clock> start_time_;
   int game_time_;
+  bool update_scores_;
 };
 
 }  // namespace myapp

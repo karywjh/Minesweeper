@@ -19,12 +19,19 @@ class LeaderBoard {
 
   // Returns a list of the players with the least times, in increasing order.
   // The size of the list should be no greater than `limit`.
-  std::vector<Player> RetrieveLeastTimes(const size_t limit);
+  std::vector<Player> RetrieveLeastTimes(const int width, const int height,
+                                              const int mines,
+                                              const size_t limit);
 
   // Returns a list of the players with the least times, in increasing order.
   // that have the same `name` as the input player name.
-  // The size of the list should be no greater than `limit`.
   std::vector<Player> RetrieveLeastTimes(const Player&, const size_t limit);
+
+  // Returns a list of the players with the least times, in increasing order.
+  // that have the same board id.
+  std::vector<Player> RetrieveLeastTimes(const int id, const int width,
+                                         const int height, const int mines,
+                                         const size_t limit);
 
  private:
   sqlite::database db_;

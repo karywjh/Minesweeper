@@ -90,3 +90,8 @@
 * **May 5:**
     - use ImGui, draw basic starting ImGui window for setting
     - draw ui & implemented drawStart to let player select difficulty or customize difficulty
+    - researched about ImGui "treenode" and printing text on same line
+
+* **May 6:**
+    - draw ending page if player wins
+    - displays leaderboard one is for overall top, one is for top players for specific id.

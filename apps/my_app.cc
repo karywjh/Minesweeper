@@ -38,9 +38,9 @@ const char kNormalFont[] = "Arial";
 const char kDbPath[] = "minesweeper.db";
 const size_t kLimit = 3;
 
-const size_t kWidthMin = 7;
+const size_t kWidthMin = 9;
 const size_t kWidthMax = 60;
-const size_t kHeightMin = 7;
+const size_t kHeightMin = 9;
 const size_t kHeightMax = 25;
 const size_t kMinesMin = 10;
 
@@ -66,11 +66,11 @@ void MyApp::update() {
 
       this->top_overall_players_ = leaderboard_.RetrieveLeastTimes(
           this->engine_.board_.width_, this->engine_.board_.height_,
-          this->engine_.board_.mine_count_, kLimit);
+          this->engine_.board_.initial_mine_count_, kLimit);
 
       this->top_id_players_ = leaderboard_.RetrieveLeastTimes(
           this->engine_.board_.id_, this->engine_.board_.width_,
-          this->engine_.board_.height_, this->engine_.board_.mine_count_,
+          this->engine_.board_.height_, this->engine_.board_.initial_mine_count_,
           kLimit);
 
       // It is crucial the this vector be populated, given that `kLimit` > 0.
@@ -256,13 +256,6 @@ void MyApp::DrawLose() {
 
 void MyApp::DrawWin() {
   // Draw scoreboard
-  const cinder::vec2 center = getWindowCenter();
-  const cinder::ivec2 size = {500, 50};
-
-  std::stringstream s;
-  s << "You Win!";
-  PrintText(s.str(), Color::white(), size, center);
-
   ui::ScopedWindow window("Game Ends");
   ui::SetWindowPos(ImVec2(0, 0));
   ui::SetWindowSize(cinder::app::getWindowSize());
@@ -272,24 +265,56 @@ void MyApp::DrawWin() {
   ui::SetWindowFontScale(1.5);
   ui::Text("You Win!");
 
-  if (ui::TreeNode("Overall Top")) {
-    for (board::Player player: this->top_overall_players_) {
+  std::stringstream ss;
+  ss << "Overall Top (" << this->engine_.board_.height_ << "x" << this->engine_.board_.width_ << ", " << this->engine_.board_.mine_count_ << ")";
+
+  if (ui::TreeNode((char*) ss.str().c_str())) {
+    ui::Text("Name:");
+    ui::SameLine(cinder::app::getWindowWidth() - 60);
+    ui::Text("Time (s)");
+
+    for (const board::Player& player: this->top_overall_players_) {
       ui::AlignTextToFramePadding();
 
       std::string name = player.name;
       char cstr[name.size() + 1];
       strcpy(cstr, name.c_str());
-      ui::Text(cstr);
+      ui::Text("%s", cstr);
 
-      ui::SameLine(cinder::app::getWindowWidth() - 30);
+      ui::SameLine(cinder::app::getWindowWidth() - 45);
+
+      std::stringstream ss;
+      ss << player.time;
+      ui::Text("%s", (char*) ss.str().c_str());
+    }
+    ui::TreePop();
+  }
+
+  ss.str("");
+  ss << "Top for ID " << this->engine_.board_.id_;
+  if (ui::TreeNode((char*) ss.str().c_str())) {
+    ui::Text("Name:");
+    ui::SameLine(cinder::app::getWindowWidth() - 60);
+    ui::Text("Time (s)");
+
+    for (const board::Player& player: this->top_id_players_) {
+      ui::AlignTextToFramePadding();
+
+      std::string name = player.name;
+      char cstr[name.size() + 1];
+      strcpy(cstr, name.c_str());
+      ui::Text("%s", cstr);
+
+      ui::SameLine(cinder::app::getWindowWidth() - 45);
 
       std::stringstream ss;
       ss << player.time;
       char const *pchar = (char*) ss.str().c_str();
-      ui::Text(pchar);
+      ui::Text("%s", pchar);
     }
     ui::TreePop();
   }
+
 
   if (ui::Button("New Game", ImVec2(ui::GetWindowWidth(), 0))) {
     ResetGame();

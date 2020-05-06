@@ -224,12 +224,17 @@ void PrintText(const string& text, const C& color, const cinder::ivec2& size,
 
 
 void MyApp::DrawLose() {
-  const cinder::vec2 center = getWindowCenter();
-  const cinder::ivec2 size = {500, 50};
+  ui::ScopedWindow window("Game Ends");
+  ui::SetWindowPos(ImVec2(0, 0));
+  ui::SetWindowSize(cinder::app::getWindowSize());
 
-  std::stringstream s;
-  s << "You Lose!";
-  PrintText(s.str(), Color::white(), size, center);
+  ui::SetCursorPosX(cinder::app::getWindowWidth() / 2 - 35);
+  ui::SetWindowFontScale(1.5);
+  ui::Text("You lose!");
+
+  if (ui::Button("New Game", ImVec2(ui::GetWindowWidth(), 0))) {
+    ResetGame();
+  }
 }
 
 void MyApp::DrawWin() {

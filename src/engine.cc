@@ -76,7 +76,7 @@ void Engine::SetGameState(const int row, const int col) {
 
 void Engine::Reset() {
   this->board_ = Board();
-  this->state_ = GameState::kNotStarted;
+  this->state_ = GameState::kSetting;
 }
 
 Board Engine::GetBoard() {

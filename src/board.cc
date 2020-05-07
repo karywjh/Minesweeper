@@ -4,8 +4,6 @@
 #include <time.h>
 #include <stdlib.h>
 
-#include <iostream>
-
 namespace board {
 
 Board::Board() {
@@ -13,7 +11,7 @@ Board::Board() {
   this->height_ = kDefaultLength;
   this->initial_mine_count_ = kDefaultMines;
   this->mine_count_ = kDefaultMines;
-  this->id_ = time(NULL);
+  this->id_ = time(nullptr);
 }
 
 void Board::InitProperties(const int width, const int height,
@@ -60,8 +58,8 @@ int Board::CountSurroundingMines(const Location& loc) {
   int mines = 0;
   set<Location> neighbors = GetNeighbors(loc);
 
-  for (Location loc: neighbors) {
-    if (IsMine(loc)) {
+  for (Location location: neighbors) {
+    if (IsMine(location)) {
       mines++;
     }
   }
@@ -118,14 +116,6 @@ void Board::GenerateBoard(const Location& start) {
   // Randomly Place Mines and fill in rest of the board
   GenerateMines(start);
   FillInValues();
-
-//  std::set<Location> loc;
-//  loc.insert(Location(2, 2));
-//  loc.insert(Location(4, 5));
-//  loc.insert(Location(2, 2));
-//  loc.insert(Location(1, 3));
-//
-//  std::cout << loc.size() << std::endl;
 }
 
 void Board::OpenZeroNeighbors(const Location& location) {
@@ -162,9 +152,6 @@ void Board::OpenNeighbors(const Location& location) {
 }
 
 void Board::UpdateNeighbor(const Location& location, const bool to_flag) {
-  int row = location.Row();
-  int col = location.Col();
-
   if (IsMine(location)) {
     // Flagged/Unflagged mine cell
     if (to_flag) {

@@ -37,6 +37,9 @@ class Cell {
    */
   void InitCell(int value, Location location);
 
+  /**
+   * True if all no surrounding mines are flagged incorrectly.
+   */
   bool IsSafe();
 
   /**

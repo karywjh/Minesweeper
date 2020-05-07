@@ -94,4 +94,7 @@
 
 * **May 6:**
     - draw ending page if player wins
-    - displays leaderboard one  is for overall top, one is for top players for specific id.
+    - displays leaderboard one is for overall top, one is for top players for specific id.
+    - displays more info: top times for current player, total wins, average time, best time...
+    - optimized game by loading each image only once in my_app, no need to store and load image for each cell
+    - write tests

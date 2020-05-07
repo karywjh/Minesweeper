@@ -21,8 +21,6 @@ Cell::Cell(int value, Location location) {
   this->value_ = value;
   this->real_value_ = value;
   this->state_ = CellState::COVERED;
-//  this->image_ = Texture::create(cinder::loadImage(
-//      cinder::app::loadAsset("Images/facingDown.png")));
   this->image_ = "Images/facingDown.png";
   this->image_index_ = 9;
   this->location_ = location;
@@ -44,16 +42,12 @@ void Cell::ChangeState(CellState new_state) {
   // change image corresponding to new state
   switch (new_state) {
     case CellState::COVERED: {
-//      this->image_ = Texture::create(cinder::loadImage(
-//          cinder::app::loadAsset("Images/facingDown.png")));
       this->image_ = "Images/facingDown.png";
       this->image_index_ = 9;
       break;
     }
 
     case CellState::FLAGGED: {
-//      this->image_ = Texture::create(cinder::loadImage(
-//          cinder::app::loadAsset("Images/flagged.png")));
       this->image_ = "Images/flagged.png";
       this->image_index_ = 10;
       break;
@@ -62,13 +56,9 @@ void Cell::ChangeState(CellState new_state) {
     case CellState::OPENED: {
       // Display bomb image if value is -1 (cell is bomb)
       if (this->value_ < 0) {
-//        this->image_ = Texture::create(
-//            cinder::loadImage(cinder::app::loadAsset("Images/bomb.png")));
         this->image_ = "Images/bomb.png";
         this->image_index_ = 11;
       } else {
-//        this->image_ = Texture::create(cinder::loadImage(cinder::app::loadAsset(
-//            "Images/" + std::to_string(this->value_) + ".png")));
         this->image_ = "Images/" + std::to_string(this->value_) + ".png";
         this->image_index_ = this->value_;
       }

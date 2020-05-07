@@ -42,6 +42,8 @@ class MyApp : public cinder::app::App {
 
   std::vector<TextureRef> images_;
   cinder::audio::VoiceRef bomb_sound_;
+  cinder::audio::VoiceRef flag_sound_;
+  cinder::audio::VoiceRef click_sound_;
   bool sound_;
 
   std::chrono::time_point<std::chrono::system_clock> start_time_;

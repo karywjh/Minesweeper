@@ -57,9 +57,17 @@ MyApp::MyApp()
 void MyApp::setup() {
   ui::initialize();
 
-  cinder::audio::SourceFileRef scoreSound =
+  cinder::audio::SourceFileRef clickSound =
+      cinder::audio::load(cinder::app::loadAsset("click.wav"));
+  this->click_sound_ = cinder::audio::Voice::create(clickSound);
+
+  cinder::audio::SourceFileRef flagSound =
+      cinder::audio::load(cinder::app::loadAsset("flag.wav"));
+  this->flag_sound_ = cinder::audio::Voice::create(flagSound);
+
+  cinder::audio::SourceFileRef bombSound =
       cinder::audio::load(cinder::app::loadAsset("bomb.wav"));
-  bomb_sound_ = cinder::audio::Voice::create(scoreSound);
+  this->bomb_sound_ = cinder::audio::Voice::create(bombSound);
 
   // Create and load all images of cells
   for (int i = 0; i <= 8; i++) {
@@ -172,10 +180,14 @@ void MyApp::mouseDown(MouseEvent event) {
   board::GameState game_state = this->engine_.GetState();
 
   if (event.isLeftDown()) {
+    if (this->engine_.board_.cells_[row][col].state_ ==
+        board::Cell::CellState::COVERED) {
+      this->click_sound_->start();
+    }
+
     if (game_state == board::GameState::kNotStarted &&
         this->engine_.StartGame(row, col)) {
       this->engine_.OpenCell(row, col);
-      // TODO: Start timer
       this->start_time_ = system_clock::now();
     }
 
@@ -187,6 +199,7 @@ void MyApp::mouseDown(MouseEvent event) {
   if (event.isRightDown()) {
     if (game_state == board::GameState::kPlaying) {
       this->engine_.FlagCell(row, col);
+      this->flag_sound_->start();
     }
   }
 }

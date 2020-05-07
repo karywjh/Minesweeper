@@ -51,10 +51,15 @@ MyApp::MyApp()
       game_time_{0},
       update_scores_{false},
       name_{"N/A"},
-      player_{} {}
+      player_{},
+      sound_{true} {}
 
 void MyApp::setup() {
   ui::initialize();
+
+  cinder::audio::SourceFileRef scoreSound =
+      cinder::audio::load(cinder::app::loadAsset("bomb.wav"));
+  bomb_sound_ = cinder::audio::Voice::create(scoreSound);
 
   // Create and load all images of cells
   for (int i = 0; i <= 8; i++) {
@@ -126,6 +131,11 @@ void MyApp::draw() {
     }
     case board::GameState::kLose: {
       this->engine_.OpenAllMines();
+      if (this->sound_) {
+        this->bomb_sound_->start();
+        this->sound_ = false;
+      }
+
       DrawGrid();
       DrawLose();
       break;
@@ -351,6 +361,7 @@ void MyApp::ResetGame() {
   this->top_overall_players_.clear();
   this->top_id_players_.clear();
   this->update_scores_ = false;
+  this->sound_ = true;
 }
 
 

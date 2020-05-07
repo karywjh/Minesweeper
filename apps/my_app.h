@@ -5,6 +5,7 @@
 
 #include <cinder/app/App.h>
 #include <cinder/gl/Texture.h>
+#include <cinder/audio/Voice.h>
 
 #include <mylibrary/engine.h>
 #include <mylibrary/leaderboard.h>
@@ -40,6 +41,9 @@ class MyApp : public cinder::app::App {
   std::vector<board::Player> personal_tops_;
 
   std::vector<TextureRef> images_;
+  cinder::audio::VoiceRef bomb_sound_;
+  bool sound_;
+
   std::chrono::time_point<std::chrono::system_clock> start_time_;
   int game_time_;
   bool update_scores_;

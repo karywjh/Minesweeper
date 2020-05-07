@@ -12,6 +12,7 @@
 namespace myapp {
 
 using board::Engine;
+using cinder::gl::TextureRef;
 
 const int kCellSize_ = 30;
 
@@ -38,6 +39,7 @@ class MyApp : public cinder::app::App {
   std::vector<board::Player> top_id_players_;
   std::vector<board::Player> personal_tops_;
 
+  std::vector<TextureRef> images_;
   std::chrono::time_point<std::chrono::system_clock> start_time_;
   int game_time_;
   bool update_scores_;

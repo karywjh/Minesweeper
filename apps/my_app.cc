@@ -7,6 +7,8 @@
 #include <cinder/gl/draw.h>
 #include <cinder/gl/gl.h>
 #include <cinder/gl/wrapper.h>
+#include <cinder/app/App.h>
+#include "cinder/app/RendererGl.h"
 
 #include <chrono>
 #include <string>
@@ -21,6 +23,8 @@ using cinder::Color;
 using cinder::ColorA;
 using cinder::Rectf;
 using cinder::TextBox;
+using cinder::gl::TextureRef;
+using cinder::gl::Texture;
 
 using std::string;
 using std::vector;
@@ -51,6 +55,20 @@ MyApp::MyApp()
 
 void MyApp::setup() {
   ui::initialize();
+  this->images_.push_back(Texture::create(
+      cinder::loadImage(cinder::app::loadAsset("Images/0.png"))));
+
+  for (int i = 0; i < 8; i++) {
+    this->images_.push_back(Texture::create(cinder::loadImage(
+        cinder::app::loadAsset("Images/" + std::to_string(i) + ".png"))));
+  }
+
+  this->images_.push_back(Texture::create(
+      cinder::loadImage(cinder::app::loadAsset("Images/facingDown.png"))));
+  this->images_.push_back(Texture::create(
+      cinder::loadImage(cinder::app::loadAsset("Images/flagged.png"))));
+  this->images_.push_back(Texture::create(
+      cinder::loadImage(cinder::app::loadAsset("Images/bomb.png"))));
 }
 
 void MyApp::update() {
@@ -119,6 +137,7 @@ void MyApp::draw() {
             (duration_cast<seconds>(system_clock::now() - this->start_time_))
                 .count();
         this->update_scores_ = true;
+        DrawGrid();
       } else {
         DrawGrid();
         DrawWin();
@@ -236,7 +255,8 @@ void MyApp::DrawGrid() {
       cinder::Rectf rect(col * kCellSize_, row * kCellSize_,
                          (col + 1) * kCellSize_, (row + 1) * kCellSize_);
 
-      cinder::gl::draw(curr_cell.image_,rect);
+      cinder::gl::draw(Texture::create(cinder::loadImage(
+          cinder::app::loadAsset(curr_cell.image_))),rect);
     }
   }
 }

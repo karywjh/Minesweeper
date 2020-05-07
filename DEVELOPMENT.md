@@ -24,8 +24,8 @@
     - [x] Ending UI if player wins/loses
     
 - Database:
-    - [ ] Display time and score by username after game ends
-        - [ ] Time, Best time, Average time, win percentage, games played, games won and etc. 
+    - [x] Display time and score by username after game ends
+        - [x] Time, Best time, Average time, win percentage, games played, games won and etc. 
     - [x] Display scores for board with same id
     
 - Additional

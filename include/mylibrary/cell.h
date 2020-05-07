@@ -22,7 +22,7 @@ class Cell {
 
   int value_; // #0-8, or -1 as mine
   int real_value_; // decrease as mines around are opened
-  TextureRef image_; // displayed in GUI corresponding to its state & value
+  std::string image_; // displayed in GUI corresponding to its state & value
   CellState state_;
   Location location_;
 

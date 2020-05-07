@@ -14,8 +14,6 @@ Board::Board() {
   this->initial_mine_count_ = kDefaultMines;
   this->mine_count_ = kDefaultMines;
   this->id_ = time(NULL);
-
-//  this->start_loc_ = Location(0, 0);
 }
 
 void Board::InitProperties(const int width, const int height,
@@ -26,11 +24,8 @@ void Board::InitProperties(const int width, const int height,
   this->mine_count_ = mine_count;
 
   // Set the size for 2D Cell vector
-  this->cells_.resize(height);
-
-  for (int i = 0; i < height; i++) {
-    cells_.at(i).resize(width);
-  }
+  vector<vector<Cell>> cells(height, vector<Cell>(width, Cell()));
+  this->cells_ = cells;
 }
 
 bool Board::IsMine(const Location& loc) {

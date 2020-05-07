@@ -23,6 +23,7 @@ class Cell {
   int value_; // #0-8, or -1 as mine
   int real_value_; // decrease as mines around are opened
   std::string image_; // displayed in GUI corresponding to its state & value
+  int image_index_;
   CellState state_;
   Location location_;
 

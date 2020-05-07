@@ -55,10 +55,9 @@ MyApp::MyApp()
 
 void MyApp::setup() {
   ui::initialize();
-  this->images_.push_back(Texture::create(
-      cinder::loadImage(cinder::app::loadAsset("Images/0.png"))));
 
-  for (int i = 0; i < 8; i++) {
+  // Create and load all images of cells
+  for (int i = 0; i <= 8; i++) {
     this->images_.push_back(Texture::create(cinder::loadImage(
         cinder::app::loadAsset("Images/" + std::to_string(i) + ".png"))));
   }
@@ -255,8 +254,7 @@ void MyApp::DrawGrid() {
       cinder::Rectf rect(col * kCellSize_, row * kCellSize_,
                          (col + 1) * kCellSize_, (row + 1) * kCellSize_);
 
-      cinder::gl::draw(Texture::create(cinder::loadImage(
-          cinder::app::loadAsset(curr_cell.image_))),rect);
+      cinder::gl::draw(this->images_[curr_cell.image_index_], rect);
     }
   }
 }

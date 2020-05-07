@@ -3,16 +3,13 @@
 #define CATCH_CONFIG_MAIN
 
 #include <catch2/catch.hpp>
-#include <cinder/Rand.h>
-#include <cinder/app/App.h>
-#include <cinder/app/RendererGl.h>
 #include <mylibrary/board.h>
+#include <mylibrary/engine.h>
 
 using board::Board;
-using cinder::app::App;
-using cinder::app::RendererGl;
 using board::Location;
 using board::Cell;
+using board::Engine;
 
 /**
  * Test for Board class
@@ -153,4 +150,65 @@ TEST_CASE("Cell Class", "[cell]") {
   }
 }
 
+// Test for game logics - engine class
+TEST_CASE("Engine", "[board][cell]") {
+  Engine engine = Engine();
+  engine.Init(3, 3, 5);
 
+  SECTION("Start Game") {
+    engine.StartGame(0, 0);
+    REQUIRE(engine.state_ == board::GameState::kPlaying);
+  }
+
+  // Board should look like this:
+  //  0  2 -1
+  //  2  5 -1
+  // -1 -1 -1
+  engine.StartGame(0, 0);
+
+  SECTION("Open mine") {
+    engine.OpenCell(0, 2);
+    REQUIRE(engine.state_ == board::GameState::kLose);
+  }
+
+  SECTION("Open non-mine") {
+    engine.OpenCell(0, 1);
+    REQUIRE(engine.board_.cells_[0][1].image_ == "Images/2.png");
+  }
+
+  SECTION("Open zero cell (auto-open neighbors)") {
+    engine.OpenCell(0, 0);
+    REQUIRE(engine.board_.cells_[0][1].image_ == "Images/2.png");
+    REQUIRE(engine.board_.cells_[1][1].image_ == "Images/5.png");
+    REQUIRE(engine.state_ == board::GameState::kWin);
+  }
+
+  SECTION("Correctly flag mine") {
+    engine.FlagCell(2, 0);
+    REQUIRE(engine.board_.cells_[2][0].image_ == "Images/flagged.png");
+    // Neighbor cell's real value --
+    REQUIRE(engine.board_.cells_[1][0].real_value_ == 1);
+  }
+
+  SECTION("Fausely flagged mine") {
+    engine.FlagCell(1, 0);
+    REQUIRE(engine.board_.cells_[1][0].image_ == "Images/flagged.png");
+    // Neighbor cell's real value < 0
+    REQUIRE(engine.board_.cells_[1][1].real_value_ < 0);
+  }
+
+  SECTION("Unflag cell") {
+    engine.FlagCell(1, 0);
+    REQUIRE(engine.board_.cells_[1][0].image_ == "Images/flagged.png");
+    engine.FlagCell(1, 0);
+    REQUIRE(engine.board_.cells_[1][0].image_ == "Images/facingDown.png");
+  }
+
+  SECTION("Open all mines") {
+    engine.OpenAllMines();
+
+    for (Location loc: engine.board_.mine_loc_) {
+      REQUIRE(engine.board_.cells_[loc.Row()][loc.Col()].image_ == "Images/bomb.png");
+    }
+  }
+}

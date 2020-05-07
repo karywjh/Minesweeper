@@ -22,15 +22,15 @@ Minesweeper is one of my favorite games of all time. Knowing that there's some s
       
 * **Player's Move:** Click to open cells. Right click to mark mines.
 
-* **Scoreboard:** Score Board that keep tracks of time, best time, average time, win percentage, total wins...<sup id="a2">[2](#f2)</sup>
+* **Scoreboard:** Score Board that keep tracks of time, best time, average time, total wins...<sup id="a2">[2](#f2)</sup>
 
 #### Additional Goals ####
 
-* **Hint:** In hint mode, highlight the safe cells that are not mines for sure.
+* **Hint:** In hint mode, highlight the safe cells that are not mines for sure. (TBA)
 
-* **Solver:** Write a solver to solve the minesweeper puzzle.
+* **Solver:** Write a solver to solve the minesweeper puzzle. (TBA)
 
-* **NF (No Flags):** Disabled players to mark flags.
+* **NF (No Flags):** Disabled players to mark flags. (TBA)
 
 * **Auto-open:** Click on a already-opened cell with all mines correctly flagged around it will open up cells adjacent to it that's safe. 
 

@@ -14,24 +14,24 @@
     - [x] Engine class
         
 - UI:
-    - [ ] Draw starting UI, where user can choose board difficulties
+    - [x] Draw starting UI, where user can choose board difficulties
     - [x] Draw Board
     - [x] Mouse Clicking Functionality (click, right click) 
     - [ ] Top bar to display game info
         - [ ] Time and mines left
         - [ ] "New" game button, setting button
     - [x] Update board after player's move
-    - [ ] Ending UI if player wins/loses
+    - [x] Ending UI if player wins/loses
     
 - Database:
     - [ ] Display time and score by username after game ends
         - [ ] Time, Best time, Average time, win percentage, games played, games won and etc. 
-    - [ ] Display scores for board with same id
+    - [x] Display scores for board with same id
     
 - Additional
     - [x] auto-opening
         - [x] click on opened cells to auto-open neighbors
-    - [ ] Play board by ID
+    - [x] Play board by ID
     - [ ] 3D Board
     
 ### Week 1
@@ -94,4 +94,4 @@
 
 * **May 6:**
     - draw ending page if player wins
-    - displays leaderboard one is for overall top, one is for top players for specific id.
+    - displays leaderboard one  is for overall top, one is for top players for specific id.

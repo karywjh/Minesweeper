@@ -1,4 +1,4 @@
-// Copyright (c) 2020 [Your Name]. All rights reserved.
+// Copyright (c) 2020 [Kary Wang]. All rights reserved.
 
 #include "my_app.h"
 
@@ -12,8 +12,6 @@
 #include <string>
 #include <cstring>
 #include <sstream>
-
-
 
 namespace myapp {
 
@@ -29,8 +27,6 @@ using std::vector;
 using std::chrono::system_clock;
 using std::chrono::duration_cast;
 using std::chrono::seconds;
-
-
 using board::Location;
 
 const char kNormalFont[] = "Arial";
@@ -50,10 +46,11 @@ MyApp::MyApp()
       start_time_{system_clock::now()},
       game_time_{0},
       update_scores_{false},
-      name_{"N/A"} {}
+      name_{"N/A"},
+      player_{} {}
 
 void MyApp::setup() {
-    ui::initialize();
+  ui::initialize();
 }
 
 void MyApp::update() {
@@ -64,18 +61,26 @@ void MyApp::update() {
            this->engine_.GetBoard().width_, this->engine_.GetBoard().height_,
            this->engine_.GetBoard().initial_mine_count_});
 
-      this->top_overall_players_ = leaderboard_.RetrieveLeastTimes(
+      this->player_ = board::Player(
+          this->name_, this->game_time_, this->engine_.board_.id_,
           this->engine_.board_.width_, this->engine_.board_.height_,
-          this->engine_.board_.initial_mine_count_, kLimit);
+          this->engine_.board_.initial_mine_count_);
 
-      this->top_id_players_ = leaderboard_.RetrieveLeastTimes(
-          this->engine_.board_.id_, this->engine_.board_.width_,
-          this->engine_.board_.height_, this->engine_.board_.initial_mine_count_,
+      this->top_overall_players_ = this->leaderboard_.RetrieveLeastTimes(
+          this->player_.width, this->player_.height, this->player_.mines,
           kLimit);
+
+      this->top_id_players_ = this->leaderboard_.RetrieveLeastTimes(
+          this->player_.id, this->player_.width, this->player_.height,
+          this->player_.mines, kLimit);
+
+      this->personal_tops_ =
+          this->leaderboard_.RetrieveLeastTimes(this->player_, kLimit);
 
       // It is crucial the this vector be populated, given that `kLimit` > 0.
       assert(!this->top_overall_players_.empty());
       assert(!this->top_id_players_.empty());
+      assert(!this->personal_tops_.empty());
     }
     return;
   }
@@ -93,7 +98,8 @@ void MyApp::draw() {
       break;
     case board::GameState::kNotStarted: {
       // Change the window size depending on the board size.
-      setWindowSize(this->engine_.GetBoard().width_ * kCellSize_, this->engine_.GetBoard().height_ * kCellSize_);
+      setWindowSize(this->engine_.GetBoard().width_ * kCellSize_,
+                    this->engine_.GetBoard().height_ * kCellSize_);
       DrawGrid();
       break;
     }
@@ -108,11 +114,16 @@ void MyApp::draw() {
       break;
     }
     case board::GameState::kWin: {
-      this->game_time_ = (duration_cast<seconds>(system_clock::now() - this->start_time_)).count();
-      this->update_scores_ = true;
-      DrawGrid();
-      DrawWin();
-      break;
+      if (!this->update_scores_) {
+        this->game_time_ =
+            (duration_cast<seconds>(system_clock::now() - this->start_time_))
+                .count();
+        this->update_scores_ = true;
+      } else {
+        DrawGrid();
+        DrawWin();
+        break;
+      }
     }
   }
 }
@@ -133,7 +144,8 @@ void MyApp::mouseDown(MouseEvent event) {
   board::GameState game_state = this->engine_.GetState();
 
   if (event.isLeftDown()) {
-    if (game_state == board::GameState::kNotStarted && this->engine_.StartGame(row, col)) {
+    if (game_state == board::GameState::kNotStarted &&
+        this->engine_.StartGame(row, col)) {
       this->engine_.OpenCell(row, col);
       // TODO: Start timer
       this->start_time_ = system_clock::now();
@@ -159,8 +171,9 @@ void MyApp::DrawStart() {
   ui::SetWindowPos(ImVec2(0, 0));
   ui::SetWindowSize(cinder::app::getWindowSize());
 
-  if (ui::InputText("Name", &this->name_, 24)) {
-    std::cout << this->name_ << std::endl;
+  std::string default_n = this->name_;
+  if (ui::InputText("Name", &default_n, 24)) {
+    this->name_ = default_n;
   }
 
   // Set id
@@ -200,7 +213,7 @@ void MyApp::DrawStart() {
     int height = this->engine_.GetBoard().height_;
     ui::SliderInt("height", &height, kHeightMin, kHeightMax);
 
-    int mines = this->engine_.GetBoard().mine_count_;
+    int mines = this->engine_.GetBoard().initial_mine_count_;
     int max = int (width * height * 0.8);
     ui::SliderInt("mine count", &mines, kMinesMin, max);
 
@@ -228,28 +241,6 @@ void MyApp::DrawGrid() {
   }
 }
 
-// Got From Snake Game
-template <typename C>
-void PrintText(const string& text, const C& color, const cinder::ivec2& size,
-               const cinder::vec2& loc) {
-  cinder::gl::color(color);
-
-  auto box = TextBox()
-      .alignment(TextBox::CENTER)
-      .font(cinder::Font(kNormalFont, 30))
-      .size(size)
-      .color(color)
-      .backgroundColor(ColorA(0, 0, 0, 0))
-      .text(text);
-
-  const auto box_size = box.getSize();
-  const cinder::vec2 locp = {loc.x - box_size.x / 2, loc.y - box_size.y / 2};
-  const auto surface = box.render();
-  const auto texture = cinder::gl::Texture::create(surface);
-  cinder::gl::draw(texture, locp);
-}
-
-
 void MyApp::DrawLose() {
   ui::ScopedWindow window("Game Ends");
   ui::SetWindowPos(ImVec2(0, 0));
@@ -261,6 +252,29 @@ void MyApp::DrawLose() {
 
   if (ui::Button("New Game", ImVec2(ui::GetWindowWidth(), 0))) {
     ResetGame();
+  }
+}
+
+void MyApp::DrawLeaderBoard(const char* title,
+                            const std::vector<board::Player>& players) {
+  if (ui::TreeNode(title)) {
+    ui::Text("Name:");
+    ui::SameLine(cinder::app::getWindowWidth() - 60);
+    ui::Text("Time (s)");
+
+    for (const board::Player& player : players) {
+      std::string name = player.name;
+      char cstr[name.size() + 1];
+      strcpy(cstr, name.c_str());
+      ui::Text("%s", cstr);
+
+      ui::SameLine(cinder::app::getWindowWidth() - 45);
+
+      std::stringstream ss;
+      ss << player.time;
+      ui::Text("%s", (char*)ss.str().c_str());
+    }
+    ui::TreePop();
   }
 }
 
@@ -276,55 +290,38 @@ void MyApp::DrawWin() {
   ui::Text("You Win!");
 
   std::stringstream ss;
-  ss << "Overall Top (" << this->engine_.board_.height_ << "x" << this->engine_.board_.width_ << ", " << this->engine_.board_.mine_count_ << ")";
-
-  if (ui::TreeNode((char*) ss.str().c_str())) {
-    ui::Text("Name:");
-    ui::SameLine(cinder::app::getWindowWidth() - 60);
-    ui::Text("Time (s)");
-
-    for (const board::Player& player: this->top_overall_players_) {
-      ui::AlignTextToFramePadding();
-
-      std::string name = player.name;
-      char cstr[name.size() + 1];
-      strcpy(cstr, name.c_str());
-      ui::Text("%s", cstr);
-
-      ui::SameLine(cinder::app::getWindowWidth() - 45);
-
-      std::stringstream ss;
-      ss << player.time;
-      ui::Text("%s", (char*) ss.str().c_str());
-    }
-    ui::TreePop();
-  }
+  ss << "Your time: " << this->game_time_ << "s";
+  ui::Text("%s", ss.str().c_str());
 
   ss.str("");
+  ss << "Your best time: " << this->personal_tops_[0].time << "s";
+  ui::Text("%s", ss.str().c_str());
+
+  ss.str("");
+  ss << "Your average time: "
+     << this->leaderboard_.GetAverageTime(this->player_) << "s";
+  ui::Text("%s", ss.str().c_str());
+
+  ss.str("");
+  ss << "Total Wins: "
+     << this->leaderboard_.GetTotalWins(this->player_);
+  ui::Text("%s", ss.str().c_str());
+
+  // Draw leader board for top overall players
+  ss.str("");
+  ss << "Overall Top (" << this->engine_.board_.height_ << "x"
+     << this->engine_.board_.width_ << ", "
+     << this->engine_.board_.initial_mine_count_ << ")";
+  DrawLeaderBoard((char*) ss.str().c_str(), this->top_overall_players_);
+
+  // Draw leader board for top overall players
+  ss.str("");
   ss << "Top for ID " << this->engine_.board_.id_;
-  if (ui::TreeNode((char*) ss.str().c_str())) {
-    ui::Text("Name:");
-    ui::SameLine(cinder::app::getWindowWidth() - 60);
-    ui::Text("Time (s)");
+  DrawLeaderBoard((char*) ss.str().c_str(), this->top_id_players_);
 
-    for (const board::Player& player: this->top_id_players_) {
-      ui::AlignTextToFramePadding();
-
-      std::string name = player.name;
-      char cstr[name.size() + 1];
-      strcpy(cstr, name.c_str());
-      ui::Text("%s", cstr);
-
-      ui::SameLine(cinder::app::getWindowWidth() - 45);
-
-      std::stringstream ss;
-      ss << player.time;
-      char const *pchar = (char*) ss.str().c_str();
-      ui::Text("%s", pchar);
-    }
-    ui::TreePop();
-  }
-
+  ss.str("");
+  ss << this->name_ << "'s Personal Top";
+  DrawLeaderBoard((char*) ss.str().c_str(), this->personal_tops_);
 
   if (ui::Button("New Game", ImVec2(ui::GetWindowWidth(), 0))) {
     ResetGame();
@@ -336,7 +333,6 @@ void MyApp::ResetGame() {
   this->top_overall_players_.clear();
   this->top_id_players_.clear();
   this->update_scores_ = false;
-  this->name_ = "N/A";
 }
 
 

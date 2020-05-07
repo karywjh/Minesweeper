@@ -27,6 +27,8 @@ class MyApp : public cinder::app::App {
   void DrawStart();
   void DrawGrid();
   void DrawLose();
+  static void DrawLeaderBoard(const char* title,
+                              const std::vector<board::Player>& players);
   void DrawWin();
 
  private:
@@ -34,11 +36,13 @@ class MyApp : public cinder::app::App {
   board::LeaderBoard leaderboard_;
   std::vector<board::Player> top_overall_players_;
   std::vector<board::Player> top_id_players_;
+  std::vector<board::Player> personal_tops_;
 
   std::chrono::time_point<std::chrono::system_clock> start_time_;
   int game_time_;
   bool update_scores_;
   std::string name_;
+  board::Player player_;
 };
 
 }  // namespace myapp

@@ -1,4 +1,4 @@
-// Copyright (c) 2020 [Your Name]. All rights reserved.
+// Copyright (c) 2020 [Kary Wang]. All rights reserved.
 
 #include <mylibrary/engine.h>
 
@@ -58,7 +58,8 @@ void Engine::FlagCell(const int row, const int col) {
 
 void Engine::OpenAllMines() {
   for (Location loc : this->board_.mine_loc_) {
-    this->board_.cells_[loc.Row()][loc.Col()].ChangeState(Cell::CellState::OPENED);
+    this->board_.cells_[loc.Row()][loc.Col()].ChangeState(
+        Cell::CellState::OPENED);
   }
 }
 

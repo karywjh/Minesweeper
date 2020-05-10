@@ -32,13 +32,15 @@ void Engine::OpenCell(const int row, const int col) {
 
     // Auto open all neighbors of opened '0' cells
     this->board_.OpenZeroNeighbors(Location(row, col));
-
-  } else if (this->board_.cells_[row][col].state_ == Cell::CellState::OPENED) {
-    // Open neighbors if all mines around it is correctly flagged
-    this->board_.OpenNeighbors(Location(row, col));
+    SetGameState(row, col);
+    return;
   }
 
-  SetGameState(row, col);
+  if (this->board_.cells_[row][col].state_ == Cell::CellState::OPENED) {
+    // Open neighbors if all mines around it is correctly flagged
+    this->board_.OpenNeighbors(Location(row, col));
+    SetGameState(row, col);
+  }
 }
 
 void Engine::FlagCell(const int row, const int col) {

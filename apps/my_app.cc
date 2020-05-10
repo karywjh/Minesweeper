@@ -8,7 +8,6 @@
 #include <cinder/gl/gl.h>
 #include <cinder/gl/wrapper.h>
 #include <cinder/app/App.h>
-#include "cinder/app/RendererGl.h"
 
 #include <chrono>
 #include <string>
@@ -33,10 +32,8 @@ using std::chrono::duration_cast;
 using std::chrono::seconds;
 using board::Location;
 
-const char kNormalFont[] = "Arial";
 const char kDbPath[] = "minesweeper.db";
 const size_t kLimit = 3;
-
 const size_t kWidthMin = 9;
 const size_t kWidthMax = 60;
 const size_t kHeightMin = 9;
@@ -68,6 +65,7 @@ void MyApp::setup() {
   cinder::audio::SourceFileRef bombSound =
       cinder::audio::load(cinder::app::loadAsset("bomb.wav"));
   this->bomb_sound_ = cinder::audio::Voice::create(bombSound);
+  this->bomb_sound_->setVolume(0.2);
 
   // Create and load all images of cells
   for (int i = 0; i <= 8; i++) {
